@@ -1,0 +1,41 @@
+#print {
+        height: 56px!important;
+        width:  56px!important;
+}
+.iconprint {
+	background-image: url(../img/print.png)!important;
+        height: 50px!important;
+        width:  50px!important;
+}
+
+#pdf {
+        height: 56px!important;
+        width:  56px!important;
+}
+.iconpdf {
+	background-image: url(../img/pdf.png)!important;
+        height: 50px!important;
+        width:  50px!important;
+}
+
+
+
+
+
+.ui-button-icon-only .ui-icon {
+    top: 3px!important;
+    left: 3px!important;
+    margin-top: 0px!important;
+    margin-left: 0px!important;
+}
+
+.cp {
+    width: 50px;
+}
+
+.titulo {
+    font-weight: bold;
+    float: left;
+    padding-top: 4px;
+    margin-right: 10px;
+}

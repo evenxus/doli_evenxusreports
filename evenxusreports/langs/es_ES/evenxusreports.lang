@@ -1,0 +1,10 @@
+# Dolibarr language file - es_ES - help 
+CHARSET=UTF-8
+Module700700Name=Evenxus Reports
+Module700700Desc=Reportes avanzados
+
+CodigoPostal=Codigo postal
+
+
+Desde=Desde
+Hasta=Hasta
