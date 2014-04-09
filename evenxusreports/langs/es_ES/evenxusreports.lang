@@ -3,8 +3,15 @@ CHARSET=UTF-8
 Module700700Name=Evenxus Reports
 Module700700Desc=Reportes avanzados
 
-CodigoPostal=Codigo postal
+
+CargarReporte=Cargar reporte
+
+
+
+
 
 
 Desde=Desde
 Hasta=Hasta
+
+CodigoPostal=Codigo postal

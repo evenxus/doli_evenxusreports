@@ -18,14 +18,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 	\defgroup   modHexagono     Modulo Hexagono
- *  \brief      Example of a module descriptor.
- *				Such a file must be copied into htdocs/mymodule/core/modules directory.
- *  \file       htdocs/hexagono/core/modules/modHexagono.class.php
- *  \ingroup    Hexagono
- *  \brief      Descripccion y activacion del modulo
- */
 require_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
 
 
@@ -63,7 +55,7 @@ class modEvenxusReports extends DolibarrModules
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Reportes avanzados";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->version = '0.1';
+		$this->version = '1.0';
 		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// En que pagina del setup aparecera (0=common,1=interface,2=others,3=very specific)
@@ -206,15 +198,13 @@ class modEvenxusReports extends DolibarrModules
 
 		// Menu principal
 		$this->menus = array();			// Array de menus
-		$r=0;
-
 		// Declarando nuevos menus
-                $this->menu[$r]=array(  'fk_menu'=>0,			        // 0 Es menu superior
+                $this->menu[0]=array(  'fk_menu'=>0,			        // 0 Es menu superior
                                         'type'=>'top',			        // This is a Top menu entry
                                         'titre'=>'Reportes',    
                                         'mainmenu'=>'reportes',
                                         'leftmenu'=>'0',
-                                        'url'=>'/evenxusreports/frontend/clientes.php',
+                                        'url'=>'/evenxusreports/frontend/evenxusreports.php',
                                         'langs'=>'evenxusreports@evenxusreports',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
                                         'position'=>120,
                                         'enabled'=>'1',						    // Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
@@ -222,31 +212,55 @@ class modEvenxusReports extends DolibarrModules
                                         'target'=>'',
                                         'picto'=>'',
                                         'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
+                // Menu izquierdo
+//		$this->menu[1]=array(	'fk_menu'=>'r=0',		// Usa r= donde r es el indice del menu padre(El indice superior es el menu superior)
+//					'type'=>'left',			// This is a Left menu entry
+//                                        'titre'=>'Terceros',
+//                                        'mainmenu'=>'reportes',
+//                                        'url'=>'/evenxusreports/frontend/terceros.php',
+//                                        'langs'=>'evenxusreports@evenxusreports',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+//                                        'position'=>100,
+//                                        'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
+//                                        'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+//                                        'target'=>'',
+//                                        'user'=>0);
+//                $r++;
+//		$this->menu[2]=array(	'fk_menu'=>'r=1',		// Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
+//                                        'type'=>'left',			// This is a Left menu entry
+//                                        'titre'=>'Clientes',
+//                                        'mainmenu'=>'reportes',
+//                                        'url'=>'/evenxusreports/frontend/clientes.php',
+//                                        'langs'=>'evenxusreports@evenxusreports',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+//                                        'position'=>110,
+//                                        'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
+//                                        'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+//                                        'target'=>'',
+//                                        'user'=>0);
 		$r++;		
                 // Menu izquierdo
-		$this->menu[$r]=array(	'fk_menu'=>'r=0',		// Usa r= donde r es el indice del menu padre(El indice superior es el menu superior)
+		$this->menu[3]=array(	'fk_menu'=>'r=0',		// Usa r= donde r es el indice del menu padre(El indice superior es el menu superior)
 					'type'=>'left',			// This is a Left menu entry
-                                        'titre'=>'Terceros',
+                                        'titre'=>'Evenxus Reports',
                                         'mainmenu'=>'reportes',
-                                        'url'=>'/evenxusreports/frontend/terceros.php',
+                                        'url'=>'/evenxusreports/frontend/evenxusreports.php',
                                         'langs'=>'evenxusreports@evenxusreports',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-                                        'position'=>100,
+                                        'position'=>100000,
                                         'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
                                         'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
                                         'target'=>'',
                                         'user'=>0);
-                $r++;
-		$this->menu[$r]=array(	'fk_menu'=>'r=1',		// Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-                                        'type'=>'left',			// This is a Left menu entry
-                                        'titre'=>'Clientes',
+		$r++;		
+		$this->menu[4]=array(	'fk_menu'=>'r=3',	
+					'type'=>'left',		
+                                        'titre'=>$langs->trans('CargarReporte'),
                                         'mainmenu'=>'reportes',
-                                        'url'=>'/evenxusreports/frontend/clientes.php',
-                                        'langs'=>'evenxusreports@evenxusreports',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-                                        'position'=>110,
-                                        'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-                                        'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+                                        'url'=>'/evenxusreports/frontend/cargarreporte.php',
+                                        'langs'=>'evenxusreports@evenxusreports',	
+                                        'position'=>100001,
+                                        'enabled'=>'1',			
+                                        'perms'=>'1',			
                                         'target'=>'',
-                                        'user'=>0);
+                                        'user'=>0);                
 //                $r++;                 
 //		$this->menu[$r]=array(	'fk_menu'=>'r=1',		// Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
 //                                        'type'=>'left',			// This is a Left menu entry

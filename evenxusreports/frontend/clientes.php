@@ -18,7 +18,8 @@
 
 
 require_once '../../main.inc.php';
-require_once "../class/desdehasta.php";
+require_once "../class/comunes.php";
+require_once "../class/filtros.php";
 
 // Seguridad
 //if ($state =='create'           && !$user->rights->evenxusreports->peliculas->create) accessforbidden(); 
@@ -33,38 +34,36 @@ $langs->load("evenxusreports@evenxus");
 
 llxHeader($c,"",$langs->trans("")); 
 
-$DH = new desdehasta();
+$Filtros = new filtros();
 
+print_fiche_titre("Listado de Clientes","","../img/reporte.png",1);
+print SaltaLinea(1);
 // *****************************************************************************************************************************
-
-print $DH->CodigoPostal();
-
+// Filtros
+print $Filtros->CodigoPostalDH();
 // *****************************************************************************************************************************
-
-
-print '</br></br></br>';
-
+print SaltaLinea(10);
+// *****************************************************************************************************************************
+// Botonera
 print '<center>';
-print '<button id="print" onclick="ProcesarReporte(\'print|-N|Brother PC-FAX v.2.2\')">Imprimir</button>';
-print '<button onclick="ProcesarReporte(\'print|-d\')">Imprimir(Con pantalla)</button>';
-print '<button onclick="ProcesarReporte(\'view\')">Vista previa</button>';
-print '<button id="pdf" onclick="ProcesarReporte(\'pdf|-o|c://temporal\')">Exportar PDF</button>';
-print '<button onclick="ProcesarReporte(\'xls\')">Exportar Excel</button>';
-print '<button onclick="ProcesarReporte(\'odt\')">Exportar Opentext</button>';
-print '<button onclick="ProcesarReporte(\'ods\')">Exportar Openspreadsheet</button>';
-print '<button onclick="ProcesarReporte(\'csv\')">Exportar a CSV</button>';
-print '<button onclick="ProcesarReporte(\'pptx|-o|c://temporal\')">Exportar a PPTX</button>';
-
-
-print '</br></br></br></br><button onclick="DescargarPlugin(\''.$dolibarr_main_url_root.'/evenxusreports/xpi/evenxusreports@evenxus.xpi\')">Descargar Plugin</button>';
+print BotoneraImprimir();
+print '<div id="buttongap">&nbsp;</div>';
+print BotoneraExportar();
 print '</center>';
+print '<br><br>';
+print PiePagina();
 
+// *****************************************************************************************************************************
 
 llxFooter();
 
 print "<script type='text/javascript'>
     function ProcesarReporte(Modo)
     {
+            if (Modo!='view' && Modo!='print')
+            {
+                err=EvenxusElegirCarpeta('1','c:/');
+            }
             // Nombre reporte
             var jasper='clientes.jasper';
             

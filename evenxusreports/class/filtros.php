@@ -15,16 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class desdehasta {
+class filtros {
     
     // Codigo postal
-    function CodigoPostal() {
+    function CodigoPostalDH() {
         global $langs;
         $CodigoPostal = $langs->trans('CodigoPostal');
         $Desde = $langs->trans('Desde');
         $Hasta = $langs->trans('Hasta');       
         $cadena =   "<tr>
-                    <td><div class='titulo'>$CodigoPostal : </div></td>
+                    <td><div class='titulofiltro'>$CodigoPostal : </div></td>
                     <td>$Desde : <input type='text' class ='cp' id='cp_desde'></td>
                     <td>$Hasta : <input type='text' class ='cp' id='cp_hasta'></td>    
                     </tr>

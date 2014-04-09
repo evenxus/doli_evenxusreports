@@ -57,7 +57,28 @@ function ParametrosComunesReporte(Reporte,Modo) {
             }  
             return params;
 }
-
+function EvenxusElegirCarpeta(params) {
+        try {
+        var element = document.createElement("EvenxusLocal");
+        for (var i=0; i<params.length; i++) {
+            element.setAttribute("param"+i, params[i]);
+        }
+        document.documentElement.appendChild(element);
+        element.setAttribute("errorMessage", "Unexpected error");
+        var ev = document.createEvent("Events");
+	ev.initEvent("Evenxus_Elegir_Carpeta", true, false); // Lanzo evento de impresion
+        element.dispatchEvent(ev);
+        // Error de instalacion del complemento
+        if (!element.hasAttribute("evenxus_load_ok")) {
+            return "El plugin Evenxus Reports(Firefox) no esta instalado";
+        }
+        document.documentElement.removeChild(element);
+        } catch(e) {
+            setTimeout(function() { throw e; }, 0);
+            return "Error no controlado";
+        }
+        return element.getAttribute("errorMessage");
+}
 /**
  * Funcion EvenxusLanzarReport
  * 
@@ -121,6 +142,3 @@ function EvenxusActualizarReport()
       return element.getAttribute("errorMessage");
 }
 
-function DescargarPlugin(rutadescarga) {
-    document.location=rutadescarga;
-}

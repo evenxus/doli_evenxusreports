@@ -18,10 +18,49 @@ $(function() {
         text: false, 
         icons: { primary: "iconprint"   }	
     });
+    $( "#printtool" ).button({
+        text: false, 
+        icons: { primary: "iconprinttool"   }	
+    });    
+    $( "#preview" ).button({
+        text: false, 
+        icons: { primary: "iconpreview"   }	
+    });        
     $( "#pdf" ).button({
         text: false, 
         icons: { primary: "iconpdf"   }	
+    });      
+    $( "#odt" ).button({
+        text: false, 
+        icons: { primary: "iconodt"   }	
     });    
+    $( "#ods" ).button({
+        text: false, 
+        icons: { primary: "iconods"   }	
+    });        
+    $( "#docx" ).button({
+        text: false, 
+        icons: { primary: "icondocx"   }	
+    });      
+    $( "#xlsx" ).button({
+        text: false, 
+        icons: { primary: "iconxlsx"   }	
+    });      
+    $( "#pptx" ).button({
+        text: false, 
+        icons: { primary: "iconpptx"   }	
+    });     
+    $( "#csv" ).button({
+        text: false, 
+        icons: { primary: "iconcsv"   }	
+    });      
+    $( "#plugin" ).button({
+        text: false, 
+        icons: { primary: "iconplugin"   }	
+    });     
 });
 
 
+function DescargarPlugin(rutadescarga) {
+    document.location=rutadescarga;
+}

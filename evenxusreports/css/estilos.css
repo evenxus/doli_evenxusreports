@@ -1,41 +1,71 @@
-#print {
+/* Pantalla info modulo *********************************************************************************************************************/ 
+#logoevenxus {
+    width: 150px;
+}
+.titulomodulo {
+    font-size: 14px;
+}
+/* Iconos **********************************************************************************************************************************/ 
+#print,#printtool,#preview,#pdf,#odt,#ods,#docx,#xlsx,#pptx,#csv,#plugin {
         height: 56px!important;
         width:  56px!important;
 }
-.iconprint {
-	background-image: url(../img/print.png)!important;
+.iconprint,.iconprinttool,.iconpreview,.iconpdf,.iconodt,.iconods,.icondocx,.iconxlsx,.iconpptx,.iconcsv,.iconplugin {
         height: 50px!important;
         width:  50px!important;
 }
-
-#pdf {
-        height: 56px!important;
-        width:  56px!important;
+.iconprint {
+	background-image: url(../img/print.png)!important;    
+}
+.iconprinttool {
+	background-image: url(../img/printtool.png)!important;    
 }
 .iconpdf {
 	background-image: url(../img/pdf.png)!important;
-        height: 50px!important;
-        width:  50px!important;
 }
-
-
-
-
-
+.iconodt {
+	background-image: url(../img/odt.png)!important;
+}
+.iconods {
+	background-image: url(../img/ods.png)!important;
+}
+.icondocx {
+	background-image: url(../img/docx.png)!important;
+}
+.iconxlsx {
+	background-image: url(../img/xlsx.png)!important;
+}
+.iconpptx {
+	background-image: url(../img/pptx.png)!important;
+}
+.iconcsv {
+	background-image: url(../img/csv.png)!important;
+}
+.iconpreview {
+	background-image: url(../img/preview.png)!important;
+}
+.iconplugin {
+	background-image: url(../img/plugin.png)!important;
+}
+#buttongap {
+    display: inline-block; 
+    width:56px;
+}
 .ui-button-icon-only .ui-icon {
     top: 3px!important;
     left: 3px!important;
     margin-top: 0px!important;
     margin-left: 0px!important;
 }
-
-.cp {
-    width: 50px;
-}
-
-.titulo {
+/* Filtros **********************************************************************************************************************************/ 
+.titulofiltro {
     font-weight: bold;
     float: left;
     padding-top: 4px;
     margin-right: 10px;
+}
+.cp {
+    width: 50px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
