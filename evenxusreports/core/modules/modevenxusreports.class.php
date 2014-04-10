@@ -19,7 +19,7 @@
  */
 
 require_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
-
+require_once DOL_DOCUMENT_ROOT .'/evenxusreports/class/instalarreportes.php';
 
 /**
  *  Descripcion y activacion de la clase del modulo extendiendo DolibarrModules
@@ -212,30 +212,7 @@ class modEvenxusReports extends DolibarrModules
                                         'target'=>'',
                                         'picto'=>'',
                                         'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
-                // Menu izquierdo
-//		$this->menu[1]=array(	'fk_menu'=>'r=0',		// Usa r= donde r es el indice del menu padre(El indice superior es el menu superior)
-//					'type'=>'left',			// This is a Left menu entry
-//                                        'titre'=>'Terceros',
-//                                        'mainmenu'=>'reportes',
-//                                        'url'=>'/evenxusreports/frontend/terceros.php',
-//                                        'langs'=>'evenxusreports@evenxusreports',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-//                                        'position'=>100,
-//                                        'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-//                                        'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
-//                                        'target'=>'',
-//                                        'user'=>0);
-//                $r++;
-//		$this->menu[2]=array(	'fk_menu'=>'r=1',		// Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-//                                        'type'=>'left',			// This is a Left menu entry
-//                                        'titre'=>'Clientes',
-//                                        'mainmenu'=>'reportes',
-//                                        'url'=>'/evenxusreports/frontend/clientes.php',
-//                                        'langs'=>'evenxusreports@evenxusreports',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-//                                        'position'=>110,
-//                                        'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-//                                        'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
-//                                        'target'=>'',
-//                                        'user'=>0);
+
 		$r++;		
                 // Menu izquierdo
 		$this->menu[3]=array(	'fk_menu'=>'r=0',		// Usa r= donde r es el indice del menu padre(El indice superior es el menu superior)
@@ -261,49 +238,18 @@ class modEvenxusReports extends DolibarrModules
                                         'perms'=>'1',			
                                         'target'=>'',
                                         'user'=>0);                
-//                $r++;                 
-//		$this->menu[$r]=array(	'fk_menu'=>'r=1',		// Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-//                                        'type'=>'left',			// This is a Left menu entry
-//                                        'titre'=>'Lista de peliculas',
-//                                        'mainmenu'=>'hexagono',
-//                                        'url'=>'/hexagono/frontend/listapeliculas.php',
-//                                        'langs'=>'hexagono@hexagono',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-//                                        'position'=>110,
-//                                        'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-//                                        'perms'=>'$user->rights->hexagono->peliculas->create',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
-//                                        'target'=>'',
-//                                        'user'=>0);
-                 $r++;
-		
-		// Example to declare a new Top Menu entry and its Left menu entry:
-		// $this->menu[$r]=array(	'fk_menu'=>0,			                // Put 0 if this is a top menu
-		//							'type'=>'top',			                // This is a Top menu entry
-		//							'titre'=>'MyModule top menu',
-		//							'mainmenu'=>'mymodule',
-		//							'leftmenu'=>'mymodule',
-		//							'url'=>'/mymodule/pagetop.php',
-		//							'langs'=>'mylangfile@mymodule',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-		//							'position'=>100,
-		//							'enabled'=>'$conf->mymodule->enabled',	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
-		//							'target'=>'',
-		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
-		// $r++;
-		//
-		// Example to declare a Left Menu entry into an existing Top menu entry:
-		// $this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=xxx',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
-		//							'type'=>'left',			                // This is a Left menu entry
-		//							'titre'=>'MyModule left menu',
-		//							'mainmenu'=>'xxx',
-		//							'leftmenu'=>'mymodule',
-		//							'url'=>'/mymodule/pagelevel2.php',
-		//							'langs'=>'mylangfile@mymodule',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-		//							'position'=>100,
-		//							'enabled'=>'$conf->mymodule->enabled',  // Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
-		//							'target'=>'',
-		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
-		// $r++;
+		$r++;		
+		$this->menu[5]=array(	'fk_menu'=>'r=3',	
+					'type'=>'left',		
+                                        'titre'=>$langs->trans('ListaReportes'),
+                                        'mainmenu'=>'reportes',
+                                        'url'=>'/evenxusreports/frontend/listareportes.php',
+                                        'langs'=>'evenxusreports@evenxusreports',	
+                                        'position'=>100002,
+                                        'enabled'=>'1',			
+                                        'perms'=>'1',			
+                                        'target'=>'',
+                                        'user'=>0);                   
 
 
 		// Exports
@@ -334,11 +280,33 @@ class modEvenxusReports extends DolibarrModules
 	 */
 	function init($options='')
 	{
-		$sql = array();
-
+                $sql = array();
 		$result=$this->load_tables();
-
-		return $this->_init($sql, $options);
+                $this->_init($sql, $options);            
+                
+                
+                                		
+                
+                // Añade menus automaticos del modulo segun reportes instalados
+                global $db;
+                $sqlModulo= "SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports";
+                $result=$db->query($sqlModulo);
+                if ($result>0) {
+                    $linea = $result->fetch_array();
+                    while ($linea) {
+                        $rowid=$linea[rowid];
+                        $padre = $linea[padre];
+                        $raiz= $linea[raiz];
+                        $orden= $linea[orden];
+                        $filtros =  $linea[filtros];
+                        $titulo = $linea[titulo];
+                        if ($raiz==1) { $padre=ObtenerIDMenuSuperior("evenxusreports");}
+                        CrearMenu($rowid, $padre,$orden,$filtros, $titulo,0);
+                        $linea = $result->fetch_array();
+                    }
+                }
+                //return $this->_init($sql, $options);            
+                return 1;
 	}
 
 	/**
@@ -351,8 +319,12 @@ class modEvenxusReports extends DolibarrModules
 	 */
 	function remove($options='')
 	{
-		$sql = array();
-
+                // Borra menus automaticos del modulo
+                global $db;
+                $sqlModulo = "DELETE * FROM ".MAIN_DB_PREFIX."menu WHERE module='evenxusreports'";
+                $db->query($sqlModulo);
+                
+                $sql = array();
 		return $this->_remove($sql, $options);
 	}
 

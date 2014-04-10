@@ -60,10 +60,6 @@ llxFooter();
 print "<script type='text/javascript'>
     function ProcesarReporte(Modo)
     {
-            if (Modo!='view' && Modo!='print')
-            {
-                err=EvenxusElegirCarpeta('1','c:/');
-            }
             // Nombre reporte
             var jasper='clientes.jasper';
             
@@ -81,7 +77,7 @@ print "<script type='text/javascript'>
             
             var i=params.length;
             params[i++]  =  '-P';
-            params[i++]  =  'NOMBRE_EMPRESA=CARACOLO';
+            params[i++]  =  'NOMBRE_EMPRESA=".MAIN_INFO_SOCIETE_NOM."';
             params[i++]  =  'CP_DESDE='+cp_desde;
             params[i++]  =  'CP_HASTA='+cp_hasta;
             
@@ -91,3 +87,9 @@ print "<script type='text/javascript'>
             if (err!==null) { alert(err);   return err; }
     }
     </script>";
+	         
+
+//			 if (Modo!='view' && Modo!='print')
+ //           {
+  //              err=EvenxusElegirCarpeta('1','c:/');
+    //        }

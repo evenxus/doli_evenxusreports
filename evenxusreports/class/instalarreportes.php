@@ -15,17 +15,45 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-function CrearMenu($rowid,$modulo,$menuprincipal,$fk_menu,$position,$NombrePHP,$Titulo,$Idioma) {
+function CrearMenu($rowid,$fk_menu,$position,$NombrePHP,$Titulo,$Archivar) {
     global $db;
+    global $id_menu_superior;
+    $sql="DELETE FROM ".MAIN_DB_PREFIX."menu WHERE rowid=$rowid";
     $db->begin();
+    $result1=$db->query($sql);
+    if ($result1==1)  {
+        $db->commit();
+    }        
+    else { $db->rollback(); }
     $sql ="INSERT INTO ".MAIN_DB_PREFIX."menu (rowid,menu_handler, module, type, mainmenu, fk_menu, position, url, titre, langs, perms) " .
-          "VALUES ($rowid,'all', '$modulo', " .
-          "'left', '$menuprincipal', $fk_menu, $position, " .
-          "'/$modulo/frontend/$NombrePHP', '$Titulo', '$Idioma', '1');";    
-    $result=$db->query($sql);
-    if ($result==1)  {
+          "VALUES ($rowid,'all', 'evenxusreports', " .
+          "'left', 'reportes', $fk_menu, $position, " .
+          "'/evenxusreports/frontend/$NombrePHP', '$Titulo', 'evenxusreports@evenxusreports', '1');";    
+    $db->begin();    
+    $result2=$db->query($sql);
+    if ($result2==1)  {
         $db->commit();
     }    
+    else { $db->rollback(); }
+    if ($Archivar==1) {
+        $sql="DELETE FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE rowid=$rowid";
+        $db->begin();            
+        $result3=$db->query($sql);
+        if ($result3==1)  {
+            $db->commit();
+        }            
+        else { $db->rollback(); }
+        $raiz=0;
+        if ($id_menu_superior==$fk_menu) { $raiz=1;}
+        $sql="INSERT INTO ".MAIN_DB_PREFIX."evr_menu_reports (rowid,padre,raiz,orden,filtros,titulo) ".
+             "VALUES ($rowid,$fk_menu,$raiz,'$position','$NombrePHP','$Titulo');";
+        $db->begin();    
+        $result4=$db->query($sql);
+        if ($result4==1)  {
+            $db->commit();
+        }    
+        else { $db->rollback(); }
+    }
 }
 
 function ObtenerIDMenuSuperior($nombremodulo) {
@@ -38,4 +66,29 @@ function ObtenerIDMenuSuperior($nombremodulo) {
         $id=$obj->rowid;
     }
     return $id;
+}
+/**
+ * Añade un reporte a la base de datos, si existe uno anterior con el mismo codigo lo borra primero
+ * 
+ * @global type $db
+ * @param type $codigo
+ * @param type $nombre
+ * @param type $detalle
+ * @param type $reporte
+ * @param type $filtros
+ * @param type $activo
+ */
+function AddReporte($codigo,$nombre,$detalle,$activo) {
+    global $db;
+    // REPORTES
+    $sql="DELETE FROM ".MAIN_DB_PREFIX."evr_reports WHERE codigo=$codigo";
+    $db->query($sql);
+    $db->begin();
+    $sql ="INSERT INTO ".MAIN_DB_PREFIX."evr_reports (codigo,nombre,detalle,activo) " .
+              "VALUES ($codigo,'$nombre','$detalle',$activo);";    
+    $result2=$db->query($sql);
+    if ($result2==1)  {
+        $db->commit();
+    }    
+    else { $db->rollback(); }
 }

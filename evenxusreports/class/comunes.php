@@ -34,11 +34,14 @@ function BotoneraExportar() {
     return $cadena;
 }
 
-function PiePagina() {
-    $cadena = '<center>Evenxus Reports - <b><a href="http://www.evenxus.com" target="_blank">www.evenxus.com</a></b></center>';
-    return $cadena;
-}
-
+/**
+ * Salta N lineas en HTML
+ * 
+ * 
+ * @param type $Numero
+ * @return string
+ * 
+ */
 function SaltaLinea($Numero) {
     $cadena="";
     $i=0;
@@ -48,7 +51,12 @@ function SaltaLinea($Numero) {
     }
     return $cadena;
 }
-
+/**
+ * Borra una carpeta(recursiva)
+ * 
+ * 
+ * @param type $carpeta
+  */
 function BorrarCarpeta($carpeta)
 {
     foreach(glob($carpeta . "/*") as $archivos_carpeta)
@@ -63,4 +71,11 @@ function BorrarCarpeta($carpeta)
         }
     }
     rmdir($carpeta);
+}
+
+
+
+function PiePagina() {
+    $cadena = '<center>Evenxus Reports - <b><a href="http://www.evenxus.com" target="_blank">www.evenxus.com</a></b></center>';
+    return $cadena;
 }
