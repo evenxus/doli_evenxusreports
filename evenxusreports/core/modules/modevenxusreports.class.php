@@ -19,7 +19,10 @@
  */
 
 require_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 require_once DOL_DOCUMENT_ROOT .'/evenxusreports/class/instalarreportes.php';
+
+
 
 /**
  *  Descripcion y activacion de la clase del modulo extendiendo DolibarrModules
@@ -280,12 +283,12 @@ class modEvenxusReports extends DolibarrModules
 	 */
 	function init($options='')
 	{
+                require_once DOL_DOCUMENT_ROOT .'/evenxus/class/datos.php';
+                $de = new DatosEvenxus();
+                
                 $sql = array();
 		$result=$this->load_tables();
                 $this->_init($sql, $options);            
-                
-                
-                                		
                 
                 // Añade menus automaticos del modulo segun reportes instalados
                 global $db;
@@ -294,14 +297,12 @@ class modEvenxusReports extends DolibarrModules
                 if ($result>0) {
                     $linea = $result->fetch_array();
                     while ($linea) {
-                        $rowid=$linea[rowid];
-                        $padre = $linea[padre];
-                        $raiz= $linea[raiz];
-                        $orden= $linea[orden];
-                        $filtros =  $linea[filtros];
-                        $titulo = $linea[titulo];
-                        if ($raiz==1) { $padre=ObtenerIDMenuSuperior("evenxusreports");}
-                        CrearMenu($rowid, $padre,$orden,$filtros, $titulo,0);
+                        $codigomenu         = $linea[codigomenu];
+                        $codigomenupadre    = $linea[codigomenupadre];
+                        $orden              = $linea[orden];
+                        $filtros            = $linea[filtros];
+                        $titulo             = $linea[titulo];
+                        CrearMenu($codigomenu, $codigomenupadre,$orden,$filtros, $titulo,0);
                         $linea = $result->fetch_array();
                     }
                 }

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once ("../../main.inc.php");        // Acceso al main de Doli, obligatorio
+require_once (DOL_DOCUMENT_ROOT ."/main.inc.php");        // Acceso al main de Doli, obligatorio
 
 /**
  * FUNCIONES COMUNES DE ACCESO A DATOS, UTILIZA COMO  BASE $db DE DOLIBARR
@@ -119,6 +119,23 @@ class DatosEvenxus {
     }
     function CanonizaSQL($sql) {
         
+    }
+    /**
+     * Devuelve el ultimo valor AUTOINCREMENT de una tabla(El sistema propo de Doli basado en el de MySQL no me funciona bien)
+     * 
+     * @param type $tabla
+     * @return type
+     */
+    function UltimoAutoIncrement($tabla) {
+        global $conf;
+        $sql="SELECT AUTO_INCREMENT AS N FROM information_schema.tables WHERE table_schema='".$conf->db->name."' AND TABLE_NAME = '$tabla'";        
+        $resql=$this->db->query($sql);
+        if ($resql) {
+             $obj = $this->db->fetch_object($resql);
+             $campo="N";
+             $valorcampo=$obj->$campo-1;
+        }
+        return $valorcampo;        
     }
     
 }

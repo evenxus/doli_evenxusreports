@@ -17,11 +17,17 @@
 
 
 require_once '../../main.inc.php';
+
+require_once '../../evenxus/class/barraprogreso.php';
+require_once '../../evenxus/class/datos.php';
+
 require_once '../class/comunes.php';
 require_once '../class/instalarreportes.php';
-require_once '../../evenxus/class/barraprogreso.php';
+
 
 global $db;
+
+$de = new DatosEvenxus();
 
 $langs->load("evenxusreports@evenxus");
 $Reporte = $_FILES['reporte']['name'];
@@ -102,18 +108,18 @@ function CargarReporte($Reporte) {
         print "Instalando reporte...<br><br>";
         $BP->ActualizarPantalla();
         $NombreReporte = basename($Reporte, ".zip");
-        $id_menu_superior=ObtenerIDMenuSuperior("evenxusreports");
+        $id_menu_superior=ObtenerIDMenuSuperior();
         // Obtiene menu superior(Menu evenxusreports) e instala
         if ($id_menu_superior>-1) {
             include("../upload/".$NombreReporte."/install.php");
             // Limpieza final
             print "Limpieza de temporales...<br><br>";
             $BP->ActualizarPantalla();
-            BorrarCarpeta("../upload/$NombreReporte");
-            unlink ("../upload/$Reporte");
+            //BorrarCarpeta("../upload/$NombreReporte");
+            //unlink ("../upload/$Reporte");
             print "Reporte instalado correctamente...redirigiendo al reporte<br><br>";
             $BP->ActualizarPantalla();
-            sleep(10);
+            sleep(1);
             $Redirigir=DOL_MAIN_URL_ROOT."/evenxusreports/frontend/".$NombreFiltros;
             print "<script language='javascript'>window.location='$Redirigir'</script>;";
         }

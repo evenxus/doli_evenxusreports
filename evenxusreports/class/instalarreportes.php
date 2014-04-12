@@ -15,51 +15,62 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-function CrearMenu($rowid,$fk_menu,$position,$NombrePHP,$Titulo,$Archivar) {
+/*
+ * Crea una entrada de menu en Dolibarr de forma directa
+ * 
+ */
+function CrearMenu($CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$Archivar) {
+    $InsertId=0;
     global $db;
-    global $id_menu_superior;
-    $sql="DELETE FROM ".MAIN_DB_PREFIX."menu WHERE rowid=$rowid";
-    $db->begin();
-    $result1=$db->query($sql);
-    if ($result1==1)  {
-        $db->commit();
-    }        
-    else { $db->rollback(); }
-    $sql ="INSERT INTO ".MAIN_DB_PREFIX."menu (rowid,menu_handler, module, type, mainmenu, fk_menu, position, url, titre, langs, perms) " .
-          "VALUES ($rowid,'all', 'evenxusreports', " .
+    
+    require_once DOL_DOCUMENT_ROOT .'/evenxus/class/datos.php';
+    $de = new DatosEvenxus();
+
+    // Asginamos fk_menu o id de menu padre
+    if ($CodigoMenuPadre==-1) {  // Menu superior
+        $fk_menu = ObtenerIDMenuSuperior();
+    } 
+    else {
+        // Si no es un menu superior consulta el id actual de su padre
+        $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenu='$CodigoMenuPadre'"; 
+        $fk_menu = $de->Valor($sql, "idactual");
+    }
+    // Alta en menu dolibarr
+    $sql ="INSERT INTO ".MAIN_DB_PREFIX."menu (menu_handler, module, type, mainmenu, fk_menu, position, url, titre, langs, perms) " .
+          "VALUES ('all', 'evenxusreports', " .
           "'left', 'reportes', $fk_menu, $position, " .
           "'/evenxusreports/frontend/$NombrePHP', '$Titulo', 'evenxusreports@evenxusreports', '1');";    
     $db->begin();    
-    $result2=$db->query($sql);
-    if ($result2==1)  {
+    $result=$db->query($sql);
+    
+    if ($result==1)  {
         $db->commit();
+        // Archivamos en nuestro gestor de menus
+        
+        // Primero borramos menu anterior si lo hay con el mismo ID
+        $sql="DELETE FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenu=$CodigoMenu";
+        $db->begin();    
+        $result2=$db->query($sql);
+        if ($result2==1)  {$db->commit(); }
+        
+        // Obtenemos el ID que ha resultado de la insercion en los menus de Dolibarr
+        $InsertId=$de->Valor("SELECT * FROM ".MAIN_DB_PREFIX."menu WHERE fk_menu='$fk_menu' AND position='$position' AND url='/evenxusreports/frontend/$NombrePHP'", "rowid");
+
+        $sql="INSERT INTO ".MAIN_DB_PREFIX."evr_menu_reports (codigomenu,codigomenupadre,idactual,orden,filtros,titulo) ".
+             "VALUES ($CodigoMenu,$CodigoMenuPadre,'$InsertId','$position','$NombrePHP','$Titulo');";      
+        $result=$db->query($sql);
+        if ($result==1)  {
+            $db->commit();
+        }
     }    
     else { $db->rollback(); }
-    if ($Archivar==1) {
-        $sql="DELETE FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE rowid=$rowid";
-        $db->begin();            
-        $result3=$db->query($sql);
-        if ($result3==1)  {
-            $db->commit();
-        }            
-        else { $db->rollback(); }
-        $raiz=0;
-        if ($id_menu_superior==$fk_menu) { $raiz=1;}
-        $sql="INSERT INTO ".MAIN_DB_PREFIX."evr_menu_reports (rowid,padre,raiz,orden,filtros,titulo) ".
-             "VALUES ($rowid,$fk_menu,$raiz,'$position','$NombrePHP','$Titulo');";
-        $db->begin();    
-        $result4=$db->query($sql);
-        if ($result4==1)  {
-            $db->commit();
-        }    
-        else { $db->rollback(); }
-    }
+    return $InsertId;    
 }
 
-function ObtenerIDMenuSuperior($nombremodulo) {
+function ObtenerIDMenuSuperior() {
     global $db;
     $id=-1;
-    $sql = "SELECT * FROM ".MAIN_DB_PREFIX."menu WHERE module='$nombremodulo' AND fk_menu=0";
+    $sql = "SELECT * FROM ".MAIN_DB_PREFIX."menu WHERE module='evenxusreports' AND fk_menu=0";
     $resql=$db->query($sql);
     if ($resql==1) {
         $obj = $db->fetch_object($resql);
