@@ -44,7 +44,7 @@ class modEvenxusReports extends DolibarrModules
                  *  Identificador de modulo, debe de ser unico  
                  *  Dentro de Inicio-> Utilidades del Sistema -> Info. Dolibarr -> Modulos se puede ver una lista de los Id Modules ocupados
                  */
-		$this->numero = 700700;
+		$this->numero = 7700000;
 		// Identificando el modulo para permisos y menus (Mejor en minus pues luego se usa en codigo)
 		$this->rights_class = 'evenxusreports';
                
@@ -163,39 +163,23 @@ class modEvenxusReports extends DolibarrModules
                 $this->boxes[$r][1] = "myboxb.php";
 		$r++;
 		*/
-
+                
+                $langs->load("evenxusreports@evenxusreports");
+                
 		// Permisos
 		$this->rights = array();		// Array de permisos del modulo
 		$r=0;
 
-                $this->rights[$r][0] = 700001;                          // Id unico de permiso
-                $this->rights[$r][1] = 'Permitir altas de peliculas';   // Etiqueta del permiso
-                $this->rights[$r][3] = 1;                               // Por defecto activo(1) o desactivo(0) para nuevos usuarios
-                $this->rights[$r][4] = 'peliculas';                     // Para testear el permiso segun $user->rights->permkey->level1->level2
-                $this->rights[$r][5] = 'create';
+                $this->rights[$r][0] = 7700001;                          // Id unico de permiso
+                $this->rights[$r][1] = $langs->trans("PermitirCargarReportes");      // Etiqueta del permiso
+                $this->rights[$r][3] = 0;                               // Por defecto activo(1) o desactivo(0) para nuevos usuarios
+                $this->rights[$r][4] = 'cargarreporte';                 // Para testear el permiso segun $user->rights->permkey->level1->level2
+                $this->rights[$r][5] = 'use';
                 $r++;
-                $this->rights[$r][0] = 700002;                          // Id unico de permiso
-                $this->rights[$r][1] = 'Permitir modificar peliculas';  // Etiqueta del permiso
-                $this->rights[$r][3] = 1;                               // Por defecto activo(1) o desactivo(0) para nuevos usuarios
-                $this->rights[$r][4] = 'peliculas';                     // Para testear el permiso segun $user->rights->permkey->level1->level2
-                $this->rights[$r][5] = 'modify';
-                $r++;
-                $this->rights[$r][0] = 700003;                          // Id unico de permiso
-                $this->rights[$r][1] = 'Permitir eliminar peliculas';   // Etiqueta del permiso
-                $this->rights[$r][3] = 1;                               // Por defecto activo(1) o desactivo(0) para nuevos usuarios
-                $this->rights[$r][4] = 'peliculas';                     // Para testear el permiso segun $user->rights->permkey->level1->level2
-                $this->rights[$r][5] = 'delete';
-                $r++;
-                $this->rights[$r][0] = 700004;                          // Id unico de permiso
-                $this->rights[$r][1] = 'Permitir acceso a consultar peliculas';  // Etiqueta del permiso
-                $this->rights[$r][3] = 1;                               // Por defecto activo(1) o desactivo(0) para nuevos usuarios
-                $this->rights[$r][4] = 'peliculas';                     // Para testear el permiso segun $user->rights->permkey->level1->level2
-                $this->rights[$r][5] = 'query';
-                $r++;
-                $this->rights[$r][0] = 700005;                          // Id unico de permiso
-                $this->rights[$r][1] = 'Permitir acceso a listado de peliculas';  // Etiqueta del permiso
-                $this->rights[$r][3] = 1;                               // Por defecto activo(1) o desactivo(0) para nuevos usuarios
-                $this->rights[$r][4] = 'peliculas';                     // Para testear el permiso segun $user->rights->permkey->level1->level2
+                $this->rights[$r][0] = 7700002;                          // Id unico de permiso
+                $this->rights[$r][1] = $langs->trans("PermitirListaReportes");     // Etiqueta del permiso
+                $this->rights[$r][3] = 0;                               // Por defecto activo(1) o desactivo(0) para nuevos usuarios
+                $this->rights[$r][4] = 'listareporte';                  // Para testear el permiso segun $user->rights->permkey->level1->level2
                 $this->rights[$r][5] = 'list';
                 $r++;
 
@@ -204,7 +188,7 @@ class modEvenxusReports extends DolibarrModules
 		// Declarando nuevos menus
                 $this->menu[0]=array(  'fk_menu'=>0,			        // 0 Es menu superior
                                         'type'=>'top',			        // This is a Top menu entry
-                                        'titre'=>'Reportes',    
+                                        'titre'=>$langs->trans("Reportes"),    
                                         'mainmenu'=>'reportes',
                                         'leftmenu'=>'0',
                                         'url'=>'/evenxusreports/frontend/evenxusreports.php',
@@ -238,7 +222,7 @@ class modEvenxusReports extends DolibarrModules
                                         'langs'=>'evenxusreports@evenxusreports',	
                                         'position'=>100001,
                                         'enabled'=>'1',			
-                                        'perms'=>'1',			
+                                        'perms'=>'$user->rights->evenxusreports->cargarreporte->use',			
                                         'target'=>'',
                                         'user'=>0);                
 		$r++;		
@@ -250,7 +234,7 @@ class modEvenxusReports extends DolibarrModules
                                         'langs'=>'evenxusreports@evenxusreports',	
                                         'position'=>100002,
                                         'enabled'=>'1',			
-                                        'perms'=>'1',			
+                                        'perms'=>'$user->rights->evenxusreports->listareporte->list',			
                                         'target'=>'',
                                         'user'=>0);                   
 
@@ -295,18 +279,19 @@ class modEvenxusReports extends DolibarrModules
                 $sqlModulo= "SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports";
                 $result=$db->query($sqlModulo);
                 if ($result>0) {
-                    $linea = $result->fetch_array();
-                    while ($linea) {
-                        $codigomenu         = $linea[codigomenu];
-                        $codigomenupadre    = $linea[codigomenupadre];
-                        $orden              = $linea[orden];
-                        $filtros            = $linea[filtros];
-                        $titulo             = $linea[titulo];
+                    $fila = $result->fetch_array();
+                    while ($fila) {
+                        $codigomenu         = $fila[codigomenu];
+                        $codigomenupadre    = $fila[codigomenupadre];
+                        $orden              = $fila[orden];
+                        $filtros            = $fila[filtros];
+                        $titulo             = $fila[titulo];
                         CrearMenu($codigomenu, $codigomenupadre,$orden,$filtros, $titulo,0);
-                        $linea = $result->fetch_array();
+                        $fila = $result->fetch_array();
                     }
                 }
-                //return $this->_init($sql, $options);            
+                // Recrea permisos de reportes a nivel de usuario
+                RecrearPermisosReportes();
                 return 1;
 	}
 

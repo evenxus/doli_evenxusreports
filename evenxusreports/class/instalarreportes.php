@@ -19,7 +19,7 @@
  * Crea una entrada de menu en Dolibarr de forma directa
  * 
  */
-function CrearMenu($CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$Archivar) {
+function CrearMenu($CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$NombrePermiso) {
     $InsertId=0;
     global $db;
     
@@ -35,11 +35,18 @@ function CrearMenu($CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$Ar
         $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenu='$CodigoMenuPadre'"; 
         $fk_menu = $de->Valor($sql, "idactual");
     }
+    // Si no lleva nombre de permiso se permite siempre
+    if ($NombrePermiso='') {
+        $permiso="1";
+    }
+    else {
+        $permiso="\$user->rights->evenxusreports->reports->$NombrePermiso";
+    }
     // Alta en menu dolibarr
     $sql ="INSERT INTO ".MAIN_DB_PREFIX."menu (menu_handler, module, type, mainmenu, fk_menu, position, url, titre, langs, perms) " .
           "VALUES ('all', 'evenxusreports', " .
           "'left', 'reportes', $fk_menu, $position, " .
-          "'/evenxusreports/frontend/$NombrePHP', '$Titulo', 'evenxusreports@evenxusreports', '1');";    
+          "'/evenxusreports/frontend/$NombrePHP', '$Titulo', 'evenxusreports@evenxusreports', '$permiso');";    
     $db->begin();    
     $result=$db->query($sql);
     
@@ -103,3 +110,95 @@ function AddReporte($codigo,$nombre,$detalle,$activo) {
     }    
     else { $db->rollback(); }
 }
+
+/**
+ * Crea un permiso para el reporte y lo activa para todos los usuarios
+ * 
+ * 
+ * @global type $db
+ * @param type $codigo
+ * @param type $detalle
+ * @param type $reporte
+ * 
+ */
+function AddPermiso($codigo,$detalle,$reporte) {
+    global $db;
+    
+    // Creando permiso
+    $sql="DELETE FROM ".MAIN_DB_PREFIX."rights_def WHERE id=$codigo";
+    $db->query($sql);    
+    $sql="INSERT INTO ".MAIN_DB_PREFIX."rights_def (id,libelle,module,entity,perms,subperms,type,bydefault) " .
+         "VALUES ($codigo,'$detalle','evenxusreports',1,'reports','$reporte','w',1)";
+    $db->begin();    
+    $result=$db->query($sql);
+    if ($result==1)  {
+        $db->commit();
+    }    
+    else { $db->rollback(); }
+    
+    // Anotando permisos en backup permisos para poder recuperarlos tras un OFF-ON en el modulo
+    $sql="DELETE FROM ".MAIN_DB_PREFIX."evr_def_permisos WHERE id=$codigo";
+    $db->query($sql);    
+    $sql="INSERT INTO ".MAIN_DB_PREFIX."evr_def_permisos (id,libelle,module,entity,perms,subperms,type,bydefault) " .
+         "VALUES ($codigo,'$detalle','evenxusreports',1,'reports','$reporte','w',1)";
+    $db->begin();    
+    $result=$db->query($sql);
+    if ($result==1)  {
+        $db->commit();
+    }    
+    else { $db->rollback(); }
+    
+    // Asignando permisos de listado para cada usuario
+    $sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."user";
+    $res=$db->query($sql);    
+    if ($res>0) {
+        $fila = $res->fetch_array();
+        while ($fila) {
+            $IdUsuario = $fila[rowid];
+            // Creando permiso para usuario
+            $sql= "INSERT INTO ".MAIN_DB_PREFIX."user_rights (fk_user,fk_id) " .
+                  "VALUES ($IdUsuario,$codigo)";
+            $db->begin();
+            $result=$db->query($sql);
+            if ($result==1)  {
+                $db->commit();
+            }    
+            else { $db->rollback(); }
+            $fila = $res->fetch_array();            
+        }
+    }
+}
+/*
+ * Recrear permisos a nivel de reporte para todos los usuarios cuando se hace OFF-ON en el modulo
+ * 
+ */
+function RecrearPermisosReportes() {
+    global $db;
+    $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_def_permisos";
+    $res=$db->query($sql);    
+    if ($res>0) {
+        $fila = $res->fetch_array();
+        while ($fila) {    
+            $id         = $fila[id];
+            $libelle    = $fila[libelle];
+            $module     = $fila[module];
+            $entity     = $fila[entity];            
+            $perms      = $fila[perms];            
+            $subperms   = $fila[subperms];            
+            $type       = $fila[type];            
+            $bydefault  = $fila[bydefault];            
+            $sql="INSERT INTO ".MAIN_DB_PREFIX."rights_def (id,libelle,module,entity,perms,subperms,type,bydefault) " .
+                 "VALUES ($id,'$libelle','$module',$entity,'$perms','$subperms','$type',$bydefault)";
+            $db->begin();
+            $result=$db->query($sql);
+            if ($result==1)  {
+                
+                $db->commit();
+            }    
+            else { $db->rollback(); }
+            $fila = $res->fetch_array();            
+        }
+    }
+}
+
+

@@ -31,12 +31,14 @@ rename("../upload/".$NombreReporte."/".$NombreFiltros,"../frontend/".$NombreFilt
 // Creamos entradas de Menu
 print "Creando entradas de menu...<br><br>";
 
-// Padre (Menu de grupo)
-CrearMenu(7007001,-1,"100001","clientes.php","Terceros",1); 
+// Padre (Menu de grupo) por eso el -1
+CrearMenu(7701000,-1,"100001","clientes.php","Terceros",$NombreReporte); 
 // Entrada menu
-CrearMenu(7007002,7007001,"100002",$NombreFiltros,"Clientes",1);
+CrearMenu(7701001,7701000,"100002",$NombreFiltros,"Clientes",$NombreReporte);
 
 // Creamos entrada de reporte en base de datos
-AddReporte(7007001, "Clientes","Listado de clientes",1);
+AddReporte(7701001, "Clientes","Listado de clientes",1);
 
+// Creamos enlace de seguridad
+AddPermiso(7701001,"Permitir usar listado de clientes",$NombreReporte);
 

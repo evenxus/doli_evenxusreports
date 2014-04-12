@@ -22,7 +22,7 @@ require_once "../class/comunes.php";
 require_once "../class/filtros.php";
 
 // Seguridad
-//if ($state =='create'           && !$user->rights->evenxusreports->peliculas->create) accessforbidden(); 
+if (!$user->rights->evenxusreports->reports->clientes) accessforbidden(); 
 
 $actualizar_report_auto=1;
 

@@ -30,6 +30,9 @@ global $db;
 $de = new DatosEvenxus();
 
 $langs->load("evenxusreports@evenxus");
+
+if (!$user->rights->evenxusreports->cargarreporte->use) { accessforbidden(); }
+
 $Reporte = $_FILES['reporte']['name'];
 
 $c =    '<link rel=stylesheet href="../css/estilos.css" type="text/css">'.
