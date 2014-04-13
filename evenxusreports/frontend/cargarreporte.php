@@ -15,6 +15,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * 
+ * Pantalla de instalacion de reportes
+ * 
+ */
 
 require_once '../../main.inc.php';
 
@@ -29,7 +34,7 @@ global $db;
 
 $de = new DatosEvenxus();
 
-$langs->load("evenxusreports@evenxus");
+$langs->load("evenxusreports@evenxusreports");
 
 if (!$user->rights->evenxusreports->cargarreporte->use) { accessforbidden(); }
 
@@ -59,15 +64,27 @@ print PiePagina();
 
 llxFooter();
 
+/**
+ * 
+ * Muestra un forma de recogida del fichero de reporte
+ * 
+ */
 function PedirFichero() {
-    print  'Aqui puedes cargar un nuevo reporte al sistema de Evenxus Reports, solo tienes que escoger el fichero ZIP del reporte y pulsar en Enviar
-            <br><br>
+    global $langs;
+    print $langs->trans("ExplicaCargaReportes").
+            '<br><br>
             <center>
             <form action="cargarreporte.php" method="post" enctype="multipart/form-data">
-            Elige reporte: <input type="file" name="reporte" size="25" />
-            <input type="submit" name="submit" value="Enviar" />
+            '.$langs->trans("EligeReporte").': <input type="file" name="reporte" size="25" />
+            <input type="submit" name="submit" value="'.$langs->trans("Enviar").'" />
             </form></center>';    
 }
+
+/**
+ * 
+ * Sube el fichero de reporte e intenta instalarlo
+ * 
+ */
 function ProcesarSubida() {
     // Se ha enviado un fichero
     if($_FILES['reporte']['name'])
@@ -98,17 +115,24 @@ function ProcesarSubida() {
             }
     }    
 }
+/**
+ * Carga(Instala) un reporte
+ * 
+ * @global type $NombreFiltros      Se pasa desde el install.php del reporte para saber donde redigir tras instalar
+ * @param type $Reporte             Nombre del reporte a instalar
+  */
 function CargarReporte($Reporte) {
-    global $NombreFiltros;
+    global $NombreFiltros; 
+    global $langs;
     $BP = new barraprogreso();
-    print "Descomprimiendo reporte...<br><br>";
+    print $langs->trans("DescomprimiendoReporte")."<br>"; 
     $BP->ActualizarPantalla();
     $zip = new ZipArchive;
     $res = $zip->open("../upload/$Reporte");
     if ($res === TRUE) {
         $zip->extractTo("../upload/");
         $zip->close();
-        print "Instalando reporte...<br><br>";
+        print $langs->trans("InstalandoReporte")."<br>"; 
         $BP->ActualizarPantalla();
         $NombreReporte = basename($Reporte, ".zip");
         $id_menu_superior=ObtenerIDMenuSuperior();
@@ -116,20 +140,20 @@ function CargarReporte($Reporte) {
         if ($id_menu_superior>-1) {
             include("../upload/".$NombreReporte."/install.php");
             // Limpieza final
-            print "Limpieza de temporales...<br><br>";
+            print $langs->trans("LimpiezaFinal")."<br>"; 
             $BP->ActualizarPantalla();
-            //BorrarCarpeta("../upload/$NombreReporte");
-            //unlink ("../upload/$Reporte");
-            print "Reporte instalado correctamente...redirigiendo al reporte<br><br>";
+            BorrarCarpeta("../upload");
+            mkdir("../upload");
+            print $langs->trans("ReporteInstaladoOK")."<br>"; 
             $BP->ActualizarPantalla();
-            sleep(1);
+            sleep(10);
             $Redirigir=DOL_MAIN_URL_ROOT."/evenxusreports/frontend/".$NombreFiltros;
             print "<script language='javascript'>window.location='$Redirigir'</script>;";
         }
         else {
-            print "Error en la instalacion del modulo. No se puede encontrar el menu principal para instalar submenus.";            
+            print $langs->trans("ErrorMenuPrincipal")."<br>"; 
         }
     } else {
-        print "Error al descomprimir el instalador. Es posible que no sea un ZIP o este corrupto.";
+        print $langs->trans("ErrorZIP")."<br>"; 
     }
 }

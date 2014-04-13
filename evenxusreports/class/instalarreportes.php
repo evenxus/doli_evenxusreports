@@ -15,11 +15,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * Crea una entrada de menu en Dolibarr de forma directa
+/**
+ * Crea una entrada de menu en Dolibarr de forma directa, para los listados instalados dede fichero (install.php)
  * 
+ * @global type $db
+ * @param type $NombreReporte       Nombre del reporte = Nombre del fichero de idiomas
+ * @param type $CodigoMenu          Idenfificador del menu >7701000 - Es el id del menu
+ * @param type $CodigoMenuPadre     Idenfificador del padre del que cuelga el menu >7701000 o -1 si es un principal
+ * @param type $position            Orden o peso dentro de las opciones
+ * @param type $NombrePHP           Nombre del PHP al que llamara(dentro del /evenxusreports/frontend/)
+ * @param type $Titulo              Titulo del menu
+ * @param string $NombrePermiso     Permiso de activacion o 1 si no lo tiene
+ * @return type                     La id del menu creado
  */
-function CrearMenu($CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$NombrePermiso) {
+function CrearMenu($NombreReporte,$CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$NombrePermiso) {
     $InsertId=0;
     global $db;
     
@@ -36,7 +45,7 @@ function CrearMenu($CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$No
         $fk_menu = $de->Valor($sql, "idactual");
     }
     // Si no lleva nombre de permiso se permite siempre
-    if ($NombrePermiso='') {
+    if ($NombrePermiso=='') {
         $permiso="1";
     }
     else {
@@ -46,7 +55,7 @@ function CrearMenu($CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$No
     $sql ="INSERT INTO ".MAIN_DB_PREFIX."menu (menu_handler, module, type, mainmenu, fk_menu, position, url, titre, langs, perms) " .
           "VALUES ('all', 'evenxusreports', " .
           "'left', 'reportes', $fk_menu, $position, " .
-          "'/evenxusreports/frontend/$NombrePHP', '$Titulo', 'evenxusreports@evenxusreports', '$permiso');";    
+          "'/evenxusreports/frontend/$NombrePHP', '$Titulo', '$NombreReporte@evenxusreports', '$permiso');";    
     $db->begin();    
     $result=$db->query($sql);
     
@@ -73,7 +82,12 @@ function CrearMenu($CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$No
     else { $db->rollback(); }
     return $InsertId;    
 }
-
+/**
+ * Devuelve el id del menu superior de evenxusreports
+ * 
+ * @global type $db
+ * @return type
+ */
 function ObtenerIDMenuSuperior() {
     global $db;
     $id=-1;
@@ -89,21 +103,20 @@ function ObtenerIDMenuSuperior() {
  * Añade un reporte a la base de datos, si existe uno anterior con el mismo codigo lo borra primero
  * 
  * @global type $db
- * @param type $codigo
- * @param type $nombre
- * @param type $detalle
- * @param type $reporte
- * @param type $filtros
- * @param type $activo
+ * @param type $codigo      Codigo de reporte
+ * @param type $nombre      Nombre del reporte
+ * @param type $detalle     Descripccion del reporte
+ * @param type $ficheros    Ficheros con ruta relativa completa que componen el reporte (separados por comas)
+ * @param type $activo      Indica si el reporte esta activo 1 o no 0
  */
-function AddReporte($codigo,$nombre,$detalle,$activo) {
+function AddReporte($codigo,$nombre,$detalle,$ficheros,$activo) {
     global $db;
     // REPORTES
     $sql="DELETE FROM ".MAIN_DB_PREFIX."evr_reports WHERE codigo=$codigo";
     $db->query($sql);
     $db->begin();
-    $sql ="INSERT INTO ".MAIN_DB_PREFIX."evr_reports (codigo,nombre,detalle,activo) " .
-              "VALUES ($codigo,'$nombre','$detalle',$activo);";    
+    $sql ="INSERT INTO ".MAIN_DB_PREFIX."evr_reports (codigo,nombre,detalle,ficheros,activo) " .
+              "VALUES ($codigo,'$nombre','$detalle','$ficheros',$activo);";    
     $result2=$db->query($sql);
     if ($result2==1)  {
         $db->commit();
@@ -114,16 +127,13 @@ function AddReporte($codigo,$nombre,$detalle,$activo) {
 /**
  * Crea un permiso para el reporte y lo activa para todos los usuarios
  * 
- * 
  * @global type $db
- * @param type $codigo
- * @param type $detalle
- * @param type $reporte
- * 
+ * @param type $codigo      Codigo del permiso
+ * @param type $detalle     Detalle del permiso
+ * @param type $reporte     'nombre' del permiso para llamarlo luego
  */
 function AddPermiso($codigo,$detalle,$reporte) {
     global $db;
-    
     // Creando permiso
     $sql="DELETE FROM ".MAIN_DB_PREFIX."rights_def WHERE id=$codigo";
     $db->query($sql);    
@@ -170,7 +180,7 @@ function AddPermiso($codigo,$detalle,$reporte) {
 }
 /*
  * Recrear permisos a nivel de reporte para todos los usuarios cuando se hace OFF-ON en el modulo
- * 
+ * Vuelve a crear todos los permisos de los reportes
  */
 function RecrearPermisosReportes() {
     global $db;

@@ -15,6 +15,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Botonera generica de impresion
+ * @return string
+ */
 function BotoneraImprimir() {
     
     $cadena = '<button id="print" onclick="ProcesarReporte(\'print\')">Imprimir</button>
@@ -22,7 +26,10 @@ function BotoneraImprimir() {
                <button id="preview" onclick="ProcesarReporte(\'view\')">Vista previa</button>';
     return $cadena;
 }
-
+/**
+ * Botonera general de exportación 
+ * @return string
+ */
 function BotoneraExportar() {
     $cadena='<button id="pdf" onclick="ProcesarReporte(\'pdf\')">Exportar a PDF</button>
              <button id="odt" onclick="ProcesarReporte(\'odt\')">Exportar a Open Document Text</button>
@@ -34,13 +41,21 @@ function BotoneraExportar() {
     return $cadena;
 }
 
+
+/**
+ * Muestra pie de pagina
+ * @return string
+ */
+function PiePagina() {
+    $cadena = '<center>Evenxus Reports - <b><a href="http://www.evenxus.com" target="_blank">www.evenxus.com</a></b></center>';
+    return $cadena;
+}
+
 /**
  * Salta N lineas en HTML
  * 
- * 
- * @param type $Numero
+ *  * @param type $Numero
  * @return string
- * 
  */
 function SaltaLinea($Numero) {
     $cadena="";
@@ -53,10 +68,8 @@ function SaltaLinea($Numero) {
 }
 /**
  * Borra una carpeta(recursiva)
- * 
- * 
  * @param type $carpeta
-  */
+ */
 function BorrarCarpeta($carpeta)
 {
     foreach(glob($carpeta . "/*") as $archivos_carpeta)
@@ -71,11 +84,4 @@ function BorrarCarpeta($carpeta)
         }
     }
     rmdir($carpeta);
-}
-
-
-
-function PiePagina() {
-    $cadena = '<center>Evenxus Reports - <b><a href="http://www.evenxus.com" target="_blank">www.evenxus.com</a></b></center>';
-    return $cadena;
 }

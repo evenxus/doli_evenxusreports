@@ -3,7 +3,6 @@ CHARSET=UTF-8
 Module770000Name=Evenxus Reports
 Module770000Desc=Reportes avanzados
 
-
 # Menus
 CargarReporte=Cargar reporte
 ListaReportes=Lista reportes
@@ -14,6 +13,21 @@ Reportes=Reportes
 PermitirCargarReportes=Permitir cargar reportes
 PermitirListaReportes=Permitir lista de reportes
 
+# Instalar listados
+ExplicaCargaReportes=Aqui puedes cargar un nuevo reporte al sistema de Evenxus Reports, solo tienes que escoger el fichero ZIP del reporte y pulsar en Enviar
+Enviar=Cargar
+EligeReporte=Elige fichero de reporte
+DescomprimiendoReporte=Descomprimiendo reporte...
+InstalandoReporte=Instalando reporte...
+LimpiezaFinal=Limpieza final...
+InstalandoFicheroReporte=Instalando fichero del reporte...
+InstalandoFiltrosReporte=Instalando filtros del reporte...
+CreandoMenus=Creando menus...
+CreandoReporte=Creando reporte...
+CreandoPermisosReporte=Creando permisos reporte...
+ReporteInstaladoOK=Reporte instalado correctamente...redirigiendo al reporte
+ErrorMenuPrincipal=Error en la instalacion del modulo. No se puede encontrar el menu principal para instalar submenus
+ErrorZIP=Error al descomprimir el instalador. Es posible que no sea un ZIP o este corrupto
 
 # Filtros
 Desde=Desde
