@@ -146,7 +146,7 @@ function CargarReporte($Reporte) {
             mkdir("../upload");
             print $langs->trans("ReporteInstaladoOK")."<br>"; 
             $BP->ActualizarPantalla();
-            sleep(10);
+            sleep(3);
             $Redirigir=DOL_MAIN_URL_ROOT."/evenxusreports/frontend/".$NombreFiltros;
             print "<script language='javascript'>window.location='$Redirigir'</script>;";
         }

@@ -59,8 +59,14 @@ $(function() {
         icons: { primary: "iconplugin"   }	
     });     
 });
-
-
+/**
+ * 
+ * Descarga el plugin
+ * 
+ * @param {type} rutadescarga
+ * @returns {undefined}
+ * 
+ */
 function DescargarPlugin(rutadescarga) {
     document.location=rutadescarga;
 }

@@ -21,9 +21,9 @@
  */
 function BotoneraImprimir() {
     
-    $cadena = '<button id="print" onclick="ProcesarReporte(\'print\')">Imprimir</button>
-               <button id="printtool" onclick="ProcesarReporte(\'print|-d\')">Imprimir(Con opciones)</button>
-               <button id="preview" onclick="ProcesarReporte(\'view\')">Vista previa</button>';
+    $cadena = '<button id="print" onclick="ImprimirReporte(\'print\|-N|PDFCreator\')">Imprimir</button>
+               <button id="printtool" onclick="ImprimirComoReporte()">Imprimir(Con opciones)</button>
+               <button id="preview" onclick="VistaPreviaReporte()">Vista previa</button>';
     return $cadena;
 }
 /**
@@ -31,13 +31,13 @@ function BotoneraImprimir() {
  * @return string
  */
 function BotoneraExportar() {
-    $cadena='<button id="pdf" onclick="ProcesarReporte(\'pdf\')">Exportar a PDF</button>
-             <button id="odt" onclick="ProcesarReporte(\'odt\')">Exportar a Open Document Text</button>
-             <button id="ods" onclick="ProcesarReporte(\'ods\')">Exportar a Open Document Calc</button>
-             <button id="docx" onclick="ProcesarReporte(\'docx\')">Exportar a Microsoft Word</button>
-             <button id="xlsx" onclick="ProcesarReporte(\'xlsx\')">Exportar a Microsoft Excel</button>
-             <button id="pptx" onclick="ProcesarReporte(\'pptx\')">Exportar a Microsoft Powepoint</button>
-             <button id="csv" onclick="ProcesarReporte(\'csv\')">Exportar a CSV</button>';
+    $cadena='<button id="pdf" onclick="ExportarReporteCarpeta(\'pdf\')">Exportar a PDF</button>
+             <button id="odt" onclick="ExportarReporteCarpeta(\'odt\')">Exportar a Open Document Text</button>
+             <button id="ods" onclick="ExportarReporteCarpeta(\'ods\')">Exportar a Open Document Calc</button>
+             <button id="docx" onclick="ExportarReporteCarpeta(\'docx\')">Exportar a Microsoft Word</button>
+             <button id="xlsx" onclick="ExportarReporteCarpeta(\'xlsx\')">Exportar a Microsoft Excel</button>
+             <button id="pptx" onclick="ExportarReporteCarpeta(\'pptx\')">Exportar a Microsoft Powepoint</button>
+             <button id="csv" onclick="ExportarReporteDirecto(\'csv\|-o|C:/Users/santi/Desktop/Directo2\')">Exportar a CSV</button>';
     return $cadena;
 }
 
@@ -50,7 +50,19 @@ function PiePagina() {
     $cadena = '<center>Evenxus Reports - <b><a href="http://www.evenxus.com" target="_blank">www.evenxus.com</a></b></center>';
     return $cadena;
 }
-
+/**
+ * 
+ * Devuelve ruta a la carpeta de idiomas del reporte
+ * 
+ * @global type $langs
+ * @return string
+ * 
+ */
+function CarpetaIdiomaReporte($NombreReporte) {
+    global $langs;
+    $carpeta= DOL_DOCUMENT_ROOT."/evenxusreports/reports/$NombreReporte/".$langs->getDefaultLang();
+    return $carpeta;
+}
 /**
  * Salta N lineas en HTML
  * 
@@ -84,4 +96,27 @@ function BorrarCarpeta($carpeta)
         }
     }
     rmdir($carpeta);
+}
+
+// removes files and non-empty directories
+function rrmdir($dir) {
+  if (is_dir($dir)) {
+    $files = scandir($dir);
+    foreach ($files as $file)
+    if ($file != "." && $file != "..") rrmdir("$dir/$file");
+    rmdir($dir);
+  }
+  else if (file_exists($dir)) unlink($dir);
+} 
+
+// copies files and non-empty directories
+function rcopy($src, $dst) {
+  if (file_exists($dst)) rrmdir($dst);
+  if (is_dir($src)) {
+    mkdir($dst);
+    $files = scandir($src);
+    foreach ($files as $file)
+    if ($file != "." && $file != "..") rcopy("$src/$file", "$dst/$file"); 
+  }
+  else if (file_exists($src)) copy($src, $dst);
 }
