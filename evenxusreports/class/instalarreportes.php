@@ -19,6 +19,7 @@
  * Crea una entrada de menu en Dolibarr de forma directa, para los listados instalados dede fichero (install.php)
  * 
  * @global type $db
+ * @param type $CodigoReporte
  * @param type $NombreReporte       Nombre del reporte = Nombre del fichero de idiomas
  * @param type $CodigoMenu          Idenfificador del menu >7701000 - Es el id del menu
  * @param type $CodigoMenuPadre     Idenfificador del padre del que cuelga el menu >7701000 o -1 si es un principal
@@ -28,7 +29,7 @@
  * @param string $NombrePermiso     Permiso de activacion o 1 si no lo tiene
  * @return type                     La id del menu creado
  */
-function CrearMenu($NombreReporte,$CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$NombrePermiso) {
+function CrearMenu($CodigoReporte,$NombreReporte,$CodigoMenu,$CodigoMenuPadre,$position,$NombrePHP,$Titulo,$NombrePermiso) {
     $InsertId=0;
     global $db;
     
@@ -59,7 +60,6 @@ function CrearMenu($NombreReporte,$CodigoMenu,$CodigoMenuPadre,$position,$Nombre
     $db->begin();    
     $result=$db->query($sql);
     
-    if ($result==1)  {
         $db->commit();
         // Archivamos en nuestro gestor de menus
         
@@ -72,14 +72,12 @@ function CrearMenu($NombreReporte,$CodigoMenu,$CodigoMenuPadre,$position,$Nombre
         // Obtenemos el ID que ha resultado de la insercion en los menus de Dolibarr
         $InsertId=$de->Valor("SELECT * FROM ".MAIN_DB_PREFIX."menu WHERE fk_menu='$fk_menu' AND position='$position' AND url='/evenxusreports/frontend/$NombrePHP'", "rowid");
 
-        $sql="INSERT INTO ".MAIN_DB_PREFIX."evr_menu_reports (codigomenu,codigomenupadre,idactual,orden,filtros,titulo) ".
-             "VALUES ($CodigoMenu,$CodigoMenuPadre,'$InsertId','$position','$NombrePHP','$Titulo');";      
+        $sql="INSERT INTO ".MAIN_DB_PREFIX."evr_menu_reports (codigoreporte,nombrereporte,codigomenu,codigomenupadre,idactual,orden,filtros,titulo) ".
+             "VALUES ($CodigoReporte,'$NombreReporte',$CodigoMenu,$CodigoMenuPadre,'$InsertId','$position','$NombrePHP','$Titulo');";      
         $result=$db->query($sql);
         if ($result==1)  {
             $db->commit();
         }
-    }    
-    else { $db->rollback(); }
     return $InsertId;    
 }
 /**
@@ -105,18 +103,19 @@ function ObtenerIDMenuSuperior() {
  * @global type $db
  * @param type $codigo      Codigo de reporte
  * @param type $nombre      Nombre del reporte
+ * @param type $modulo      Modulo del reporte
  * @param type $detalle     Descripccion del reporte
  * @param type $ficheros    Ficheros con ruta relativa completa que componen el reporte (separados por comas)
  * @param type $activo      Indica si el reporte esta activo 1 o no 0
  */
-function AddReporte($codigo,$nombre,$detalle,$ficheros,$activo) {
+function AddReporte($codigo,$nombre,$modulo,$detalle,$ficheros,$activo) {
     global $db;
     // REPORTES
     $sql="DELETE FROM ".MAIN_DB_PREFIX."evr_reports WHERE codigo=$codigo";
     $db->query($sql);
     $db->begin();
-    $sql ="INSERT INTO ".MAIN_DB_PREFIX."evr_reports (codigo,nombre,detalle,ficheros,activo) " .
-              "VALUES ($codigo,'$nombre','$detalle','$ficheros',$activo);";    
+    $sql ="INSERT INTO ".MAIN_DB_PREFIX."evr_reports (codigo,nombre,modulo,detalle,ficheros,activo) " .
+              "VALUES ($codigo,'$nombre','$modulo','$detalle','$ficheros',$activo);";    
     $result2=$db->query($sql);
     if ($result2==1)  {
         $db->commit();
@@ -202,12 +201,70 @@ function RecrearPermisosReportes() {
             $db->begin();
             $result=$db->query($sql);
             if ($result==1)  {
-                
                 $db->commit();
             }    
             else { $db->rollback(); }
             $fila = $res->fetch_array();            
         }
+    }
+}
+/**
+ * Borra un reporte completamente
+ * 
+ * @param type $codigo Codigo del reporte
+ */
+function BorrarReporte($codigo) {
+    global $db;
+    require_once DOL_DOCUMENT_ROOT .'/evenxus/class/datos.php';
+    $de = new DatosEvenxus();
+    
+    $error=0;
+    $db->begin();
+    
+    // Recorremos backup menus para borrar los menus en orden
+    $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenupadre>-1 AND codigoreporte=".$codigo;
+    $res=$db->query($sql);    
+    if ($res>0) {
+        $fila = $res->fetch_array();
+        while ($fila) {         
+            $idactual   = $fila[idactual];
+            $sql = "DELETE FROM ".MAIN_DB_PREFIX."menu WHERE rowid=$idactual";            
+            $result=$db->query($sql);
+            if ($result!=1) { $error++; }
+            $fila = $res->fetch_array();
+        }
+    }
+    // Borrando definicion de permisos
+    $sql = "DELETE FROM ".MAIN_DB_PREFIX."rights_def WHERE id=".$codigo;
+    $result=$db->query($sql);
+    if ($result!=1) { $error++; }
+    // Borrando permisos
+    $sql = "DELETE FROM ".MAIN_DB_PREFIX."user_rights WHERE fk_id=".$codigo;
+    $result=$db->query($sql);
+    if ($result!=1) { $error++; }    
+    
+    // Borrando ficheros del reporte
+    $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_reports WHERE codigo=".$codigo;
+    $ficheros=$de->Valor($sql,"ficheros");
+    $fichero = explode(",", $ficheros);
+    $NFicheros = count($fichero);
+    $i=0;
+    while ($i<=$NFicheros) {
+        unlink(DOL_DOCUMENT_ROOT."/evenxusreports/".$fichero[$i]);
+        $i++;
+    }
+    // Borrando entrada en lista de reportes
+    $sql = "DELETE FROM ".MAIN_DB_PREFIX."evr_reports WHERE codigo=".$codigo;
+    $result=$db->query($sql);
+    if ($result!=1) { $error++; }
+    $sql = "DELETE FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigoreporte=".$codigo;
+    $result=$db->query($sql);
+    if ($result!=1) { $error++; }
+    if ($error==0) {
+        $db->commit();
+    }
+    else {
+        $db->rollback();
     }
 }
 

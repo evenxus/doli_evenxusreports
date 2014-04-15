@@ -20,12 +20,17 @@
 require_once '../../main.inc.php';
 require_once "../class/comunes.php";
 require_once "../class/filtros.php";
+require_once "../../evenxus/class/datos.php";
+
+$CodigoReporte=8001001;
+$reporte = "clientes";
+$actualizar_report_auto=1;
 
 // Seguridad
 if (!$user->rights->evenxusreports->reports->clientes) accessforbidden(); 
+if (ReporteActivo($CodigoReporte)==0) accessforbidden(); 
 
-$reporte = "clientes";
-$actualizar_report_auto=1;
+
 
 $c =    '<link rel=stylesheet href="../css/estilos.css" type="text/css">'.
         '<script src="../js/evenxusreports.js" type="text/javascript"></script>'.

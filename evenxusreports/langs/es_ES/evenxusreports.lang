@@ -8,7 +8,6 @@ CargarReporte=Cargar reporte
 ListaReportes=Lista reportes
 Reportes=Reportes
 
-
 # Permisos
 PermitirCargarReportes=Permitir cargar reportes
 PermitirListaReportes=Permitir lista de reportes
@@ -28,6 +27,17 @@ CreandoPermisosReporte=Creando permisos reporte...
 ReporteInstaladoOK=Reporte instalado correctamente...redirigiendo al reporte
 ErrorMenuPrincipal=Error en la instalacion del modulo. No se puede encontrar el menu principal para instalar submenus
 ErrorZIP=Error al descomprimir el instalador. Es posible que no sea un ZIP o este corrupto
+
+# Pantalla listados
+LISTADEREPORTESEVENXUS=Listado de reportes instalados
+CampoCodigo=Codigo
+CampoInforme=Informe
+CampoModulo=Modulo
+CampoActivo=Activo
+CampDetalle=Detalle
+DESINSTALARLISTADO=Desinstalar
+DESINSTALARLISTADOTITULO=Desinstalar listado
+EXPLICADESINSTALARLISTADO=Al desintalar un listado se borrar del sistema.
 
 # Filtros
 Desde=Desde

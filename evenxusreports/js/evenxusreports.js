@@ -40,24 +40,29 @@ function ParametrosComunesReporte(Reporte,Modo,Idioma,Salida) {
                     }
                 }
             }
-            else {
-                // Si no es ni print ni view comprobamos si se esta pasando carpeta de exportacion
-                if (Modo.indexOf('print')===-1 && Modo.indexOf('view')===-1) {
-                    if (Modo.indexOf('|')>-1) {
-                        var sec_param = Modo.split('|');
-                        // Los añado
-                        for (var j=0; j < sec_param.length; j++) {
-                            params[i++]  =  sec_param[j];
-                        }
-                    }                
-                    else {
-                         params[i++]  =  Modo;
-                    }
-                }
-                else {
-                    params[i++]  =  Modo;
-                }
+           // Si no es ni print ni view ni dialogoimpresora comprobamos si se esta pasando carpeta de exportacion directa
+           if (Modo.indexOf('print')===-1 && Modo.indexOf('view')===-1 && Modo.indexOf('dialogoimpresora')===-1 ) {
+              if (Modo.indexOf('|')>-1) {
+                  var sec_param = Modo.split('|');
+                  // Los añado
+                  for (var j=0; j < sec_param.length; j++) {
+                      params[i++]  =  sec_param[j];
+                  }
+              }               
+              // Sin parametros añadidos a la exportacion
+              else {
+                params[i++]  =  Modo;
+              }
             }  
+            // View
+            if (Modo.indexOf('view')>-1) {
+                params[i++]  =  'view';
+            }
+            // Cuadro de dialogo de la impresora
+            if (Modo.indexOf('dialogoimpresora')>-1) {
+                params[i++]  =  'dialogoimpresora';
+            }
+            
             params[i++]  =  '-r';
             params[i++]  =  Idioma;
             return params;
@@ -185,7 +190,7 @@ function EvenxusActualizarReportIdioma()
 // Exportacion con pantalla de seleccion de carpeta
 function ExportarReporteCarpeta(Modo) {
     err=EvenxusElegirCarpeta('1',null); // 1 Español - 2 Ingles - 3 Frances , 2 parametro es la carpeta que abrira(null = Documentos usuario)
-    ProcesarReporte(Modo,1);
+    ProcesarReporte(Modo,1); //<- Indica pedir carpeta
 }
 // Exportacion con o sin parametros pero sin seleccion de carpeta
 // P.E. : \'csv\|-o|C:/Users/santi/Desktop/Directo2\' Este parametro exporta en formato csv a la carpeta 
@@ -204,7 +209,7 @@ function ImprimirReporte(Modo) {
 }
 // Imprimir con cuadro de seleccion de impresora
 function ImprimirComoReporte() {
-    ProcesarReporte('print|-d',0);
+    ProcesarReporte('dialogoimpresora',0);
 }
 
 

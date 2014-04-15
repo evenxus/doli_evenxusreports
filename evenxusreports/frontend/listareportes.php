@@ -1,5 +1,7 @@
 <?php
+
 /* Copyright (C) 2013-     Santiago Garcia      <babelsistemas@gmail.com>
+ * Copyright (C) 2014-     Enfirme              <enfirme@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,104 +17,356 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once ("../../main.inc.php");         // Acceso al main de Doli, obligatorio
+/**
+ * PAGINA QUE CONTIENE LA LISTA DE TODOS LAS RECOGIDAS CON SU ESTADO
+ */
+require_once ("../../main.inc.php");                 // Acceso al main de Doli, obligatorio
+require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php'; // Para leer los archivos de una carpeta
 
-$langs->load("evenxusreports@evenxus");
+$langs->load("users");     // Carga de idiomas desde el modulo mediante fichero@modulo
+$langs->load("admin");     // Carga de idiomas desde el modulo mediante fichero@modulo	
 
+require_once DOL_DOCUMENT_ROOT . '/core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 
-// Seguridad
+require_once ("../../evenxus/class/datos.php");     // Ayuda en acceso a datos Doli
+require_once ("../../evenxus/class/seguridad.php"); // Clase de seguridad
+
+require_once ("../class/instalarreportes.php");
+
+$form = new Form($db);                  // Usado para gestioanr forms(p.e. lanzar los paneles de confirmacion en ajax)
+$Seguridad = new SeguridadEvenxus();    // Usado para ofuscar URLs y poder pasar SQL como parametros sin errores de SQL Injection
+$Datos = new DatosEvenxus();            // Ayuda en accesos a datos
+// Seguridad TODO
 //if (!$user->rights->hexagono->peliculas->list) accessforbidden(); 
+
 
 /*
  * Listado
  */
 
-llxHeader();    // Cabecera
+llxHeader($cabecera);    // Cabecera
+// ******************************************************************************************
+// Obtiene los parametros pasados
+// ******************************************************************************************
+$state = GETPOST('state', 'alpha');
+$action = GETPOST('action', 'alpha');
+$confirm = GETPOST('confirm', 'alpha');
+$sortfield = GETPOST('sortfield', 'alpha');  // Campo indice
+$sortorder = GETPOST('sortorder', 'alpha');  // Sentido orden
+$page = GETPOST('page', 'int');         // Pagina
+$boton = $_REQUEST["modification"];     // Boton pulsado
+$registros = $_REQUEST["registros"];
 
-$sortfield		= GETPOST('sortfield','alpha');  // Campo indice
-$sortorder		= GETPOST('sortorder','alpha');  // Sentido orden
+$codigo = GETPOST('codigo', 'alpha');    //Codigo del informe
 
+
+/*
+ * Actions
+ */
+
+// Activa listado
+if ($action == 'set') {
+    $actualizar = 1;
+    $sqlactualizar = InsertOrUpdateInforme($codigo, $actualizar);
+    $results = $Datos->Query($sqlactualizar);
+    // Crear menu
+    $de = new DatosEvenxus();
+    $sql="SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenu=".$codigo;
+    $results = $Datos->Query($sql);
+    $fila = $results->fetch_array();
+    CrearMenu($fila['nombrereporte'],$fila['codigomenu'],$fila['codigomenupadre'],$fila['orden'],$fila['filtros'],$fila['titulo'],$fila['nombrereporte']);
+    header("Location: listareportes.php");
+ }
+// Desactiva listado
+if ($action == 'reset') {
+    $actualizar = 0;
+    $sqlactualizar = InsertOrUpdateInforme($codigo, $actualizar);
+    $results = $Datos->Query($sqlactualizar);
+    // Borro menu
+    $de = new DatosEvenxus();
+    $sql="SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenu=".$codigo;
+    $idactual=$de->Valor($sql, "idactual");
+    $sql="DELETE FROM ".MAIN_DB_PREFIX."menu WHERE rowid=".$idactual;
+    $Datos->Query($sql);
+    header("Location: listareportes.php");    
+}
+// Hemos pulsado la papelera
+if ($action == 'delete') {
+    $actualizar = 0;
+    BorrarReporte($codigo);
+    header("Location: listareportes.php");
+    exit;
+}
+
+// ******************************************************************************************
+//                                          LISTADO
 // ******************************************************************************************
 // Control de limites y paginacion 
 // ******************************************************************************************
-$page=GETPOST('page','int');
-if ($page == -1) { $page = 0 ; }
+if ($page == -1) {
+    $page = 0;
+}
 $limit = $conf->liste_limit;
-$offset = $limit * $page ;
+$offset = $limit * $page;
 // ******************************************************************************************
-// Obtiene los campos de filtro LIKE pasados desde cajas de texto 
+// Creamos y lanzamos SQL
 // ******************************************************************************************
-$busqueda_nombre=GETPOST('busqueda_nombre');
-$busqueda_rowid=GETPOST('busqueda_rowid');
-// ******************************************************************************************
-// Creamos SQL
-// ******************************************************************************************
-if (! $sortfield) $sortfield="nombre"; // Campo de orden por defecto
-if (! $sortorder) $sortorder="ASC";   // Orden ascendente por defecto
-$sql = "SELECT rowid,codigo,nombre,detalle,activo FROM ".MAIN_DB_PREFIX."evr_reports ";
-$sql.= " WHERE 1=1 "; // <- Prefiltro para añadir luego otros sin problemas
-if ($busqueda_rowid)       $sql.= " AND rowid LIKE '%".$db->escape($busqueda_rowid)."%'";    // Filtro LIKE segun caja
-if ($busqueda_nombre)      $sql.= " AND nombre LIKE '%".$db->escape($busqueda_nombre)."%'";  // Filtro LIKE segun caja
-$sql.= " ORDER BY $sortfield $sortorder";                   // Aplicando campo y sentido del orden
-$sql.= " ".$db->plimit($conf->liste_limit+1, $offset);      // Creando offset para las siguientes pages
-// ******************************************************************************************
-// Y lanzamos la consulta
-$resql=$db->query($sql);
-// Si tenemos resultado valido(aun sin lineas)
-if ($resql) {
-    // Obtenemos el numero de lineas
-    $num = $db->num_rows($resql);  
-    $i = 0;
-    // Ponemos nombre del listado
-    print_barre_liste($langs->trans("LISTAPELICULAS"), $page, $_SERVER["PHP_SELF"], '&$busqueda_rowid='.$busqueda_rowid.'&busqueda_nombre='.$busqueda_nombre, $sortfield, $sortorder,'',$num);
-    // Pintamos tabla de resultados
+if (!$sortfield)
+    $sortfield = "rowid"; // Campo de orden por defecto
+if (!$sortorder)
+    $sortorder = "ASC";    // Orden ascendente por defecto
+$sql = CrearConsultaSQL($sortfield, $sortorder, $offset);
+$rsInformes = $db->query($sql);
+if ($rsInformes) {
+    //***************************************************************************************    
+    // Contamos el total de registros (Con y Sin paginacion)
+    //***************************************************************************************    
+    $TotalRegistrosConPaginacion = $db->num_rows($rsInformes);
+    $TotalRegistrosSinPaginacion = $Datos->Registros($sql . filtros(), "N");
+    //***************************************************************************************    
+    // Ponemos titulo del listado
+    //***************************************************************************************    
+    print_barre_liste($langs->trans("LISTADEREPORTESEVENXUS"), $page, $_SERVER["PHP_SELF"], '&$busqueda_codigo=' . $busqueda_codigo . '&busqueda_nombre=' . $busqueda_nombre, $sortfield, $sortorder, '', $TotalRegistrosConPaginacion, $TotalRegistrosSinPaginacion);
+    print '<form method="POST" name="formulario" action="' . $_SERVER['PHP_SELF'] . '">';
+    print '<input type="hidden" name="state" value="modify">';
+    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+    print '<input type="hidden" name="page" value="' . $page . '">';
+    print "<table width='100%'>";
+    print "<tr></tr></table>";
+    //***************************************************************************************    
+    // Pintamos tabla de resultados 
+    //***************************************************************************************    
     print '<table class="liste" width="100%">';
     print '<tr class="liste_titre">';
+    //***************************************************************************************        
     // Parametros de busqueda
-    $param='&amp;busqueda_rowid='.$busqueda_rowid;
-    $param.='&amp;busqueda_nombre='.$busqueda_nombre;
-    // Titulos de las columnas
-    print_liste_field_titre($langs->trans("ID"), $_SERVER["PHP_SELF"], "rowid","","$param",'',$sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("NOMBRE"), $_SERVER["PHP_SELF"], "nombre","","$param",' colspan="2" ',$sortfield,$sortorder); // <-El Atributo colspan=2 "agranda" la ultima columna
+    //***************************************************************************************    
+    $param = '&amp;busqueda_terminal=' . $busqueda_terminal;
+    $param.='&amp;busqueda_codigo=' . $busqueda_codigo;
+    $param.='&amp;busqueda_proveedor=' . $busqueda_nombre;
+    $param.='&filtro_operario=' . $codigo;
 
-    print "</tr>";
-    print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
-    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+//***************************************************************************************    
+    // Titulos de las columnas
+    //***************************************************************************************    
+    print_liste_field_titre($langs->trans("CampoCodigo"), $_SERVER["PHP_SELF"], "codigo", "", "$param", '', $sortfield, $sortorder);
+    print_liste_field_titre($langs->trans("CampoInforme"), $_SERVER["PHP_SELF"], "nombre", "", "$param", '', $sortfield, $sortorder); // <-El Atributo colspan=2 "agranda" la ultima columna
+    print_liste_field_titre($langs->trans("CampoModulo"), $_SERVER["PHP_SELF"], "modulo", "", "$param", '', $sortfield, $sortorder); // <-El Atributo colspan=2 "agranda" la ultima columna	
+    print_liste_field_titre($langs->trans("CampoActivo"), $_SERVER["PHP_SELF"], "activo", "", "$param", 'colspan="2"', $sortfield, $sortorder); // <-El Atributo colspan=2 "agranda" la ultima columna	
+    //print_liste_field_titre($langs->trans("activo"), $_SERVER["PHP_SELF"], "activo", "", "$param", '', $sortfield, $sortorder); // <-El Atributo colspan=2 "agranda" la ultima columna	
+    print_liste_field_titre($langs->trans("CampDetalle"), $_SERVER["PHP_SELF"], "detalle", "", "", 'colspan="2"'); // <-El Atributo colspan=2 "agranda" la ultima columna    	
+    print '</tr>';
+
     //***************************************************************************************    
     // Filtros de busqueda
     //***************************************************************************************
     print '<tr class="liste_titre">';
     print '<td  class="liste_titre">';
-    print '<input type="text" class="flat" size="3" name="busqueda_rowid" value="'.$busqueda_rowid.'">'; 
     print '</td>';
-    print '<td class="liste_titre">';
-    print '<input type="text" class="flat" size="24" name="busqueda_nombre" value="'.$busqueda_nombre.'">'; // Caja de filtrado
+    print '<td  class="liste_titre">';
     print '</td>';
-    
-    print '<td class="liste_titre" align="right"><input class="liste_titre" type="image" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/search.png" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
-    print "</td></td>";
+    print '<td  class="liste_titre">';
+    print '</td>';
+    print '<td  class="liste_titre">';
+    print '</td>';
+    print '<td  class="liste_titre">';
+    print '</td>';
+    print '<td colspan="2" class="liste_titre" align="center">';
+    print "</td>";
     print "</tr>\n";
     //***************************************************************************************
-    print '</form>';
+    $var = true; // Alternar linea de colores
+    print '<input type="hidden" name="registros" value="' . $TotalRegistrosConPaginacion . '">';
+    $i = 0;
+    while ($i < min($TotalRegistrosConPaginacion, $limit)) {
+        //***************************************************************************************
+        // LINEAS - Recorremos los resultados y pintamos las lineas
+        //***************************************************************************************
+        $rowInformes = $rsInformes->fetch_array();
+        $var = !$var;
+        // Si el módulo esta activo mostramos el informe, sino no.
 
-    $var=true;
-    // LINEAS - Recorremos los resultados y pintamos las lineas
-    while ($i < min($num,$limit)) {
-        $obj = $db->fetch_object($resql);
-        $var=!$var;
-        print '<tr '.$bc[$var].'>'; // <- Aqui se crea las lineas de colores alternos
-        print '<td width="100" nowrap="nowrap"><a href="peliculas.php?state=query&pelicula='.$obj->rowid.'">'.img_picto($langs->trans("MOSTRARPELICULA"),"pelicula.png@hexagono").'</a>'.$obj->id_pelicula.'</td>';
-        print '<td  colspan="2">'.$obj->nombre.'</td>'; // <-El Atributo colspan=2 "agranda" la ultima columna
-        print "</tr>";
+        print '<tr ' . $bc[$var] . '>'; // <- Aqui se crea las lineas de colores alternos
+        print '<input type="hidden" name="codigo' . $i . '" value="' . $rowInformes['rowid'] . '">';
+        print '<td width="100" nowrap="nowrap">' . img_picto($langs->trans("MOSTRARRUTA"), "reporte16x16.png@evenxusreports") . $rowInformes['codigo'] . '</td>';
+        print '<td width="100" nowrap="nowrap">' . $rowInformes['nombre'] . '</td>';
+        print '<td width="150" nowrap="nowrap">' . Modulo_Nombre($rowInformes['modulo']) . '</td>';
+        print '<td  width="100" align="left" valign="middle">';
+        if (Modulo_Activo($rowInformes['modulo']) == true) {
+            // Module non actif
+            $seleccionado = $rowInformes['activo'];
+            if ($seleccionado == 1) {
+                print '<a href="listareportes.php?action=reset&codigo=' . $rowInformes['codigo'] . '">';
+                print img_picto($langs->trans("Enabled"), 'switch_on');
+            } else {
+                print '<a href="listareportes.php?action=set&codigo=' . $rowInformes['codigo'] . '">';
+                print img_picto($langs->trans("Disabled"), 'switch_off');
+            }
+            print "</a></td>";
+        } else {
+            print "módulo-inactivo";
+        }
+
+        print '</td>';
+        //Boton de Borrar, Eliminar, Papelera
+        print '<td width="50" nowrap="nowrap">';
+       // print '<a href="listareportes.php?action=delete&codigo=' . $rowInformes['codigo'] . '">' . img_delete();
+        print '<input id="desinstalar-reporte'.$rowInformes['codigo'].'" type="button" name="desinstalar-reporte'.$rowInformes['codigo'].'"  value="'.$langs->trans("DESINSTALARLISTADO").'" onclick="">';
+
+        print $form->formconfirm("listareportes.php?codigo=".$rowInformes['codigo'],$langs->trans("DESINSTALARLISTADOTITULO"),$langs->trans("EXPLICADESINSTALARLISTADO"),"delete","",0,"desinstalar-reporte".$rowInformes['codigo']);           
+        print ' &nbsp; &nbsp; ';           
+        print "</a></td>";
+        print '<td align="left" width="350" valign="middle" colspan="2">';
+        print $rowInformes['detalle'];
+        print "</td>";
+        print '</tr>';
         $i++;
     }
-    $db->free($resql);
-    print "</table>";
+    unset($rowInformes);
+    $db->free($rsInformes);
+    
+    
+    print '</form>';
+    include("../../evenxus/class/js/checklistcontrol.php");
 }
-else {
-    dol_print_error($db); // Error en SQL
-}
-$db->close(); // Cerramos base
 llxFooter();  // Pie
 
+/**
+ * Crea la consulta SQL del listado
+ * 
+ * @param type $sortfield   Orden
+ * @param type $sortorder   Sentido
+ * @param type $offset      Inicio
+ * @param type $limit       Limite de registro a mostrar
+ * @return type Cadena con el SQL
+ */
+function CrearConsultaSQL($sortfield, $sortorder, $offset) {
+    global $conf, $db;
+
+    $sql = "select  * from " . MAIN_DB_PREFIX . "evr_reports ";
+    $sql.= " where 1=1";
+    $sql.= filtros();
+    $sql.= " ORDER BY $sortfield $sortorder";
+    $sql.= " " . $db->plimit($conf->liste_limit + 1, $offset);      // Creando offset para las siguientes pages    
+    return $sql;
+}
+
+/**
+ * Crea filtros en funcion de los parametros recibidos
+ * 
+ * @global type $busqueda_codigo
+ * @global type $busqueda_nombre
+ * @global type $db
+ * @return string
+ */
+function filtros() {
+    global $busqueda_codigo, $db;
+    $sql = "";
+    if ($busqueda_codigo) {
+        $sql.= " AND reg.codigo LIKE '%" . $db->escape($busqueda_codigo) . "%' ";    // Filtro LIKE segun caja
+    }
+    return $sql;
+}
+
+/**
+ * Comprueba que el módulo está activado o no
+ * 
+ * @param: $nom_modulo . Nombre del módulo. terceros->'societe'
+ */
+function Modulo_Activo($nom_modulo) {
+    global $db;
+
+    $sql = "SELECT r.id, r.libelle, r.module";
+    $sql.= " FROM " . MAIN_DB_PREFIX . "rights_def as r";
+    $sql.= " where r.module = '" . $nom_modulo . "'";
+    $sql.= " and r.bydefault=1";
+
+    // Esta sql nos devuelve los módulos y  sus apartados activados en Dolibarr
+
+    $activado = false;  // por defecto desactivado
+    $result = $db->query($sql);
+    if ($result) {
+        $num = $db->num_rows($result);
+        $i = 0;
+        // Miramos si devuelve algún registro, indicará que el módulo existe y está activo
+        while ($i < $num && $activado == false) {
+            $obj = $db->fetch_object($result);
+            $i++;
+            $activado = true;
+        }
+        $db->free($result);
+    } else {
+        // Si activado no ha sido true en ningún momento indicará no está el módulo. 
+        $activado = false;
+    }
+    return $activado;
+}
+
+/**
+ * Devuelve el nombre del módulo
+ * 
+ * @param: $nom_modulo . Nombre del módulo. terceros->'societe'
+ */
+function Modulo_Nombre($nom_modulo) {
+    global $db;
+    // Busca todos los módulos que están cargados en dolibarr.
+    // Esto lo hace mirando el nombre de las carpetas que son módulos.
+    $modules = array();
+    $modulesdir = dolGetModulesDirs();
+    // Recorremos las carpetas
+    foreach ($modulesdir as $dir) {
+        // Abre cada una de las carpetas
+        $handle = @opendir(dol_osencode($dir));
+        if (is_resource($handle)) {
+            while (($file = readdir($handle)) !== false) {
+                if (is_readable($dir . $file) && substr($file, 0, 3) == 'mod' && substr($file, dol_strlen($file) - 10) == '.class.php') {
+                    // Capturamos el nobre de la carpeta del módulo.
+                    $modName = substr($file, 0, dol_strlen($file) - 10);
+                    if ($modName) {
+
+                        // Para coger el nombre del módulo en su propio "Lenguaje",
+                        // hay que leer para cada módulo el fichero langs correspondiente
+                        include_once $dir . $file;
+                        $objMod = new $modName($db);
+
+                        // Load all lang files of module
+                        if (isset($objMod->langfiles) && is_array($objMod->langfiles)) {
+                            foreach ($objMod->langfiles as $domain) {
+                                // si el nombre del modulo es el pasado a la función.
+                                if (strtoupper($modName) == strtoupper('mod' . $nom_modulo)) {
+                                    $nombre = $objMod->getName();
+                                }
+                            }
+                        }
+                        // Load all permissions
+                    }
+                }
+            }
+        }
+    }
+    return $nombre;
+}
+
+/**
+ * Comprueba si el registro esta activo a desactivo
+ * Sino existe el registro lo crea, sino actualiza su valor
+ */
+function InsertOrUpdateInforme($codigo, $actualizar) {
+    global $Datos;
+
+    $estado = 0;
+    If ($actualizar == 1)
+        $estado = 1;
+    $codigo = $Datos->Valor("SELECT codigo FROM " . MAIN_DB_PREFIX . "evr_reports WHERE codigo='" . $codigo . "'", "codigo");
+    if ($codigo != "") {
+        $sql = "UPDATE " . MAIN_DB_PREFIX . "evr_reports SET activo=" . $actualizar . " WHERE codigo='" . $codigo . "'";
+    } else {
+        $sql = "INSERT INTO " . MAIN_DB_PREFIX . "evr_reports  (codigo,nombre,detalle) VALUES ('" . $codigo . "', '" . $nombre . "'," . $actualizar . ")";
+    }
+    return $sql;
+}
+
 ?>
+ 

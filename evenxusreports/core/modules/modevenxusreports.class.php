@@ -281,12 +281,14 @@ class modEvenxusReports extends DolibarrModules
                 if ($result>0) {
                     $fila = $result->fetch_array();
                     while ($fila) {
+                        $codigoreporte      = $fila[codigoreporte];
+                        $nombrereporte      = $fila[nombrereporte];
                         $codigomenu         = $fila[codigomenu];
                         $codigomenupadre    = $fila[codigomenupadre];
                         $orden              = $fila[orden];
                         $filtros            = $fila[filtros];
                         $titulo             = $fila[titulo];
-                        CrearMenu($codigomenu, $codigomenupadre,$orden,$filtros, $titulo,0);
+                        CrearMenu($codigoreporte,$nombrereporte,$codigomenu, $codigomenupadre,$orden,$filtros, $titulo,0);
                         $fila = $result->fetch_array();
                     }
                 }
