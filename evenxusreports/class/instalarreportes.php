@@ -218,30 +218,52 @@ function BorrarReporte($codigo) {
     require_once DOL_DOCUMENT_ROOT .'/evenxus/class/datos.php';
     $de = new DatosEvenxus();
     
-    $error=0;
-    $db->begin();
-    
-    // Recorremos backup menus para borrar los menus en orden
+    // Recorremos backup menus de listados para borrar los menus en orden
     $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenupadre>-1 AND codigoreporte=".$codigo;
     $res=$db->query($sql);    
     if ($res>0) {
         $fila = $res->fetch_array();
         while ($fila) {         
+            $rowid      = $fila[rowid];
             $idactual   = $fila[idactual];
+            $sql = "DELETE FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE rowid=$rowid";            
+            $db->query($sql);
             $sql = "DELETE FROM ".MAIN_DB_PREFIX."menu WHERE rowid=$idactual";            
-            $result=$db->query($sql);
-            if ($result!=1) { $error++; }
+            $db->query($sql);
             $fila = $res->fetch_array();
         }
     }
-    // Borrando definicion de permisos
+    // Comprobamos menus "padre" sin hijos y lo eliminamos
+    $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigoreporte=".$codigo;
+    $res=$db->query($sql);    
+    if ($res>0) {
+        $fila = $res->fetch_array();
+        while ($fila) {         
+            $rowid             = $fila[rowid];
+            $idactual          = $fila[idactual];
+            $codigomenu        = $fila[codigomenu];
+            $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenupadre=$codigomenu";
+            $n=$de->Existe($sql);
+            if ($n==0) { 
+                // Borramos menus
+                $sql = "DELETE FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE rowid=$rowid";       
+                $db->query($sql);
+                $sql = "DELETE FROM ".MAIN_DB_PREFIX."menu WHERE rowid=$idactual";       
+                $db->query($sql);
+                $fila = $res->fetch_array();                
+            }
+            $fila = $res->fetch_array();
+        }
+    }
+    
+    // Borrando definicion de permisos    
+    $sql="DELETE FROM ".MAIN_DB_PREFIX."evr_def_permisos WHERE id=$codigo";
+    $db->query($sql);    
     $sql = "DELETE FROM ".MAIN_DB_PREFIX."rights_def WHERE id=".$codigo;
-    $result=$db->query($sql);
-    if ($result!=1) { $error++; }
+    $db->query($sql);
     // Borrando permisos
     $sql = "DELETE FROM ".MAIN_DB_PREFIX."user_rights WHERE fk_id=".$codigo;
-    $result=$db->query($sql);
-    if ($result!=1) { $error++; }    
+    $db->query($sql);
     
     // Borrando ficheros del reporte
     $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_reports WHERE codigo=".$codigo;
@@ -255,17 +277,7 @@ function BorrarReporte($codigo) {
     }
     // Borrando entrada en lista de reportes
     $sql = "DELETE FROM ".MAIN_DB_PREFIX."evr_reports WHERE codigo=".$codigo;
-    $result=$db->query($sql);
-    if ($result!=1) { $error++; }
-    $sql = "DELETE FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigoreporte=".$codigo;
-    $result=$db->query($sql);
-    if ($result!=1) { $error++; }
-    if ($error==0) {
-        $db->commit();
-    }
-    else {
-        $db->rollback();
-    }
+    $db->query($sql);
 }
 
 
