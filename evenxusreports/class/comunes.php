@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2013-     Santiago Garcia      <babelsistemas@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,27 +21,28 @@
  * @return string
  */
 function BotoneraImprimir() {
-    
-    $cadena = '<button id="print" onclick="ImprimirReporte(\'print\')">Imprimir</button>
-               <button id="printtool" onclick="ImprimirComoReporte()">Imprimir(Con opciones)</button>
-               <button id="preview" onclick="VistaPreviaReporte()">Vista previa</button>';
+    global $langs;
+    $cadena = '<button id="print" onclick="ImprimirReporte(\'print\')">' . $langs->trans("Imprimir") . '</button>
+               <button id="printtool" onclick="ImprimirComoReporte()">' . $langs->trans("ImprimirComo") . '</button>
+               <button id="preview" onclick="VistaPreviaReporte()">' . $langs->trans("VistaPrevia") . '</button>';
     return $cadena;
 }
+
 /**
  * Botonera general de exportación 
  * @return string
  */
 function BotoneraExportar() {
-    $cadena='<button id="pdf" onclick="ExportarReporteCarpeta(\'pdf\')">Exportar a PDF</button>
-             <button id="odt" onclick="ExportarReporteCarpeta(\'odt\')">Exportar a Open Document Text</button>
-             <button id="ods" onclick="ExportarReporteCarpeta(\'ods\')">Exportar a Open Document Calc</button>
-             <button id="docx" onclick="ExportarReporteCarpeta(\'docx\')">Exportar a Microsoft Word</button>
-             <button id="xlsx" onclick="ExportarReporteCarpeta(\'xlsx\')">Exportar a Microsoft Excel</button>
-             <button id="pptx" onclick="ExportarReporteDirecto(\'pptx\')">Exportar a Microsoft Powepoint</button>
-             <button id="csv" onclick="ExportarReporteDirecto(\'csvD\|-o|C:/Users/santi/Desktop/Directo2\')">Exportar a CSV</button>';
+    global $langs;
+    $cadena = '<button id="pdf" onclick="ExportarReporteCarpeta(\'pdf\')">' . $langs->trans("ExportarPDF") . '</button>
+             <button id="odt" onclick="ExportarReporteCarpeta(\'odt\')">' . $langs->trans("ExportarODT") . '</button>
+             <button id="ods" onclick="ExportarReporteCarpeta(\'ods\')">' . $langs->trans("ExportarODS") . '</button>
+             <button id="docx" onclick="ExportarReporteCarpeta(\'docx\')">' . $langs->trans("ExportarWord") . '</button>
+             <button id="xlsx" onclick="ExportarReporteCarpeta(\'xlsx\')">' . $langs->trans("ExportarExcel") . '</button>
+             <button id="pptx" onclick="ExportarReporteDirecto(\'pptx\')">' . $langs->trans("ExportarPowerPoint") . '</button>
+             <button id="csv" onclick="ExportarReporteDirecto(\'csv\')">' . $langs->trans("ExportarCSV") . '</button>';
     return $cadena;
 }
-
 
 /**
  * Muestra pie de pagina
@@ -59,11 +61,21 @@ function PiePagina() {
  */
 function ReporteActivo($CodigoReporte) {
     $de = new DatosEvenxus();
-    $sql="SELECT * FROM ".MAIN_DB_PREFIX."evr_reports WHERE codigo=".$CodigoReporte;
-    $activo=$de->Valor($sql, "activo");
+    $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_reports WHERE codigo=" . $CodigoReporte;
+    $activo = $de->Valor($sql, "activo");
     return $activo;
 }
 
+/**
+ * Comprueba que el módulo está activado o no
+ * 
+ * @param: $nom_modulo . Nombre del módulo. terceros->'societe'
+ */
+function Modulo_Activo($nom_modulo) {
+    global $conf;
+    $activado = in_array($nom_modulo, $conf->modules);
+    return $activado;
+}
 
 /**
  * 
@@ -75,8 +87,27 @@ function ReporteActivo($CodigoReporte) {
  */
 function CarpetaIdiomaReporte($NombreReporte) {
     global $langs;
-    $carpeta= DOL_DOCUMENT_ROOT."/evenxusreports/reports/$NombreReporte/".$langs->getDefaultLang();
+    $carpeta = DOL_DOCUMENT_ROOT . "/evenxusreports/reports/$NombreReporte/" . $langs->getDefaultLang();
     return $carpeta;
+}
+
+function CargarIdiomas() {
+    global $db;
+    $idiomas = array();
+    $idiomas[] = "evenxusreports@evenxusreports";
+    $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_idiomas";
+    $res = $db->query($sql);
+
+    if ($res > 0) {
+        $fila = $res->fetch_array();
+        while ($fila) {
+            $idioma = $fila[idioma];
+            $nombreidioma = explode(".", $idioma);
+            $idiomas[] = $nombreidioma[0] . "@evenxusreports";
+            $fila = $res->fetch_array();
+        }
+    }
+    return $idiomas;
 }
 /**
  * Salta N lineas en HTML
@@ -85,28 +116,24 @@ function CarpetaIdiomaReporte($NombreReporte) {
  * @return string
  */
 function SaltaLinea($Numero) {
-    $cadena="";
-    $i=0;
-    while ($i<$Numero) {
-        $cadena=$cadena."</br>";
+    $cadena = "";
+    $i = 0;
+    while ($i < $Numero) {
+        $cadena = $cadena . "</br>";
         $i++;
     }
     return $cadena;
 }
+
 /**
  * Borra una carpeta(recursiva)
  * @param type $carpeta
  */
-function BorrarCarpeta($carpeta)
-{
-    foreach(glob($carpeta . "/*") as $archivos_carpeta)
-    {
-        if (is_dir($archivos_carpeta))
-        {
+function BorrarCarpeta($carpeta) {
+    foreach (glob($carpeta . "/*") as $archivos_carpeta) {
+        if (is_dir($archivos_carpeta)) {
             BorrarCarpeta($archivos_carpeta);
-        }
-        else
-        {
+        } else {
             unlink($archivos_carpeta);
         }
     }
@@ -115,23 +142,28 @@ function BorrarCarpeta($carpeta)
 
 // removes files and non-empty directories
 function rrmdir($dir) {
-  if (is_dir($dir)) {
-    $files = scandir($dir);
-    foreach ($files as $file)
-    if ($file != "." && $file != "..") rrmdir("$dir/$file");
-    rmdir($dir);
-  }
-  else if (file_exists($dir)) unlink($dir);
-} 
+    if (is_dir($dir)) {
+        $files = scandir($dir);
+        foreach ($files as $file)
+            if ($file != "." && $file != "..")
+                rrmdir("$dir/$file");
+        rmdir($dir);
+    }
+    else if (file_exists($dir))
+        unlink($dir);
+}
 
 // copies files and non-empty directories
 function rcopy($src, $dst) {
-  if (file_exists($dst)) rrmdir($dst);
-  if (is_dir($src)) {
-    mkdir($dst);
-    $files = scandir($src);
-    foreach ($files as $file)
-    if ($file != "." && $file != "..") rcopy("$src/$file", "$dst/$file"); 
-  }
-  else if (file_exists($src)) copy($src, $dst);
+    if (file_exists($dst))
+        rrmdir($dst);
+    if (is_dir($src)) {
+        mkdir($dst);
+        $files = scandir($src);
+        foreach ($files as $file)
+            if ($file != "." && $file != "..")
+                rcopy("$src/$file", "$dst/$file");
+    }
+    else if (file_exists($src))
+        copy($src, $dst);
 }

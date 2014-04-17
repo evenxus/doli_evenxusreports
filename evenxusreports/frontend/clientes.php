@@ -42,7 +42,7 @@ llxHeader($c,"",$langs->trans(""));
 
 $Filtros = new filtros();
 
-print_fiche_titre("Listado de Clientes","","../img/reporte.png",1);
+print_fiche_titre($langs->trans("ListadoClientes"),"","../img/reporte.png",1);
 print SaltaLinea(1);
 // *****************************************************************************************************************************
 // Filtros

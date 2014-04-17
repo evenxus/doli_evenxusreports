@@ -1,0 +1,66 @@
+# Dolibarr language file - en_US - evenxusreports
+CHARSET=UTF-8
+Module7700000Name=Evenxus Reports
+Module7700000Desc=Advanced reporting
+
+# Menus
+CargarReporte=Load report
+ListaReportes=Report list
+Reportes=Reports
+
+# Permisos
+Permission7700001=Allow install new repot
+Permission7700002=Edit report list
+
+# Instalar listados
+ExplicaCargaReportes=Here, you can install a new report to Evenxus Reports system, only choose the ZIP that contain report an clic in Load
+Enviar=Load
+EligeReporte=Select report file to install
+DescomprimiendoReporte=Unzip report...
+InstalandoReporte=Install report...
+LimpiezaFinal=Finally clean...
+InstalandoFicheroReporte=Install report file...
+InstalandoFiltrosReporte=Install report filters...
+CreandoMenus=Creatings menus...
+CreandoReporte=Creating reports...
+CreandoPermisosReporte=Creating permits...
+ReporteInstaladoOK=Reports installed correctly...redirecting to report
+ErrorMenuPrincipal=Error in report installation. Can not find the main menu to install submenus
+ErrorZIP=Error in unzip installer. It may not be a ZIP or this corrupt
+
+# Pantalla Evenxus
+
+Parrafo1=Evenxus Reports is a Dolibarr module to manage reports and graphics from Mozilla Firefox.<br><br>Use Jasper Reports engine to advanced design reports that allow a very powerfull and simple report design with the Jasper Studio tool.<br><br> Jasper Reports is a report engine write in pure JAVA, and connec to with Dolibarr over Mozilla Firefox Plugin.<br><br>
+Parrafo2=The plugin contain all the necesary to use module. And the only requeriment to work is that JAVA must be installed in local machine.
+Parrafo3=For more information and support :
+Parrafo4=The module and plugin are open source and you can download for our GitHub repository : 
+Parrafo5=Evenxus Reports use other open source libraries and software to work : <br><br>- Jasper Report as libray to manager report<br>- Jasper Studio as report edit tool<br>- Jasperstarter as report script launch
+
+# Pantalla listados
+LISTADEREPORTESEVENXUS=List of installed reports
+CampoCodigo=Code
+CampoInforme=Report
+CampoModulo=Module
+CampoActivo=Active
+CampDetalle=Detail
+DESINSTALARLISTADO=Uninstall
+DESINSTALARLISTADOTITULO=Uninstall report
+EXPLICADESINSTALARLISTADO=When you uninstall a report, this is deleted from the system
+
+# Botonera
+Imprimir=Print
+ImprimirComo=Print Dialog
+VistaPrevia=Preview
+ExportarPDF=Export to PDF
+ExportarWord=Export to Word
+ExportarExcel=Export to Excel
+ExportarPowerPoint=Export to Powerpoint
+ExportarODT=Export to Open Document Text
+ExportarODS=Export to Open Document Calc
+ExportarCSV=Export to CSV file
+
+# Filtros
+Desde=From
+Hasta=To
+CodigoPostal=ZIP code
+

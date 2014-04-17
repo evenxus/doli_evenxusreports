@@ -1,0 +1,7 @@
+# Dolibarr language file - en_US
+CHARSET=UTF-8
+
+Productos=Products
+Productos=Products
+ListadoProductos=Product List
+Permission8001051=Allow access to list of products

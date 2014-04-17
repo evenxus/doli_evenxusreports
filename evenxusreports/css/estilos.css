@@ -1,9 +1,20 @@
+
+div.mainmenu.reportes {
+	background-image: url(../img/reporte.png)!important;
+}
+
 /* Pantalla info modulo *********************************************************************************************************************/ 
 #logoevenxus {
     width: 150px;
 }
 .titulomodulo {
     font-size: 14px;
+}
+/* Lista reportes***************************************************************************************************************************/ 
+#modulo-off {
+	background-image: url(../img/modulo-off.png)!important;    
+        width: 50px;
+        text-indent: -9999px;
 }
 /* Iconos **********************************************************************************************************************************/ 
 #print,#printtool,#preview,#pdf,#odt,#ods,#docx,#xlsx,#pptx,#csv,#plugin {
@@ -70,7 +81,3 @@
     margin-right: 5px;
 }
 
-
-div.mainmenu.reportes {
-	background-image: url(../img/reporte.png)!important;
-}

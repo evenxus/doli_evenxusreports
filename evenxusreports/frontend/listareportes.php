@@ -21,32 +21,31 @@
  * PAGINA QUE CONTIENE LA LISTA DE TODOS LAS RECOGIDAS CON SU ESTADO
  */
 require_once ("../../main.inc.php");                 // Acceso al main de Doli, obligatorio
-require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php'; // Para leer los archivos de una carpeta
-
-$langs->load("users");     // Carga de idiomas desde el modulo mediante fichero@modulo
-$langs->load("admin");     // Carga de idiomas desde el modulo mediante fichero@modulo	
-
-require_once DOL_DOCUMENT_ROOT . '/core/lib/usergroups.lib.php';
-require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
-
-require_once ("../../evenxus/class/datos.php");     // Ayuda en acceso a datos Doli
-require_once ("../../evenxus/class/seguridad.php"); // Clase de seguridad
-
-require_once ("../class/instalarreportes.php");
+require_once (DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php'); // Para leer los archivos de una carpeta
+require_once (DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php');
+require_once (DOL_DOCUMENT_ROOT . '/evenxus/class/datos.php');     // Ayuda en acceso a datos Doli
+require_once (DOL_DOCUMENT_ROOT . '/evenxusreports/class/instalarreportes.php');
+require_once (DOL_DOCUMENT_ROOT . '/evenxusreports/class/comunes.php');
 
 $form = new Form($db);                  // Usado para gestioanr forms(p.e. lanzar los paneles de confirmacion en ajax)
-$Seguridad = new SeguridadEvenxus();    // Usado para ofuscar URLs y poder pasar SQL como parametros sin errores de SQL Injection
 $Datos = new DatosEvenxus();            // Ayuda en accesos a datos
-// Seguridad TODO
-//if (!$user->rights->hexagono->peliculas->list) accessforbidden(); 
+
+// Seguridad 
+if (!$user->rights->evenxusreports->listareporte->list) { accessforbidden(); }
+
+// Carga idiomas de todos los reportes
+$idiomas=CargarIdiomas();
+foreach ($idiomas as &$idioma) {
+    $langs->load($idioma);
+}
 
 
 /*
  * Listado
  */
-
-llxHeader($cabecera);    // Cabecera
+$c =    '<link rel=stylesheet href="../css/estilos.css" type="text/css">';
+        
+llxHeader($c);    // Cabecera
 // ******************************************************************************************
 // Obtiene los parametros pasados
 // ******************************************************************************************
@@ -58,7 +57,6 @@ $sortorder = GETPOST('sortorder', 'alpha');  // Sentido orden
 $page = GETPOST('page', 'int');         // Pagina
 $boton = $_REQUEST["modification"];     // Boton pulsado
 $registros = $_REQUEST["registros"];
-
 $codigo = GETPOST('codigo', 'alpha');    //Codigo del informe
 
 
@@ -76,7 +74,7 @@ if ($action == 'set') {
     $sql="SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenu=".$codigo;
     $results = $Datos->Query($sql);
     $fila = $results->fetch_array();
-    CrearMenu($fila['nombrereporte'],$fila['codigomenu'],$fila['codigomenupadre'],$fila['orden'],$fila['filtros'],$fila['titulo'],$fila['nombrereporte']);
+    CrearMenu($fila['codigoreporte'],$fila['nombrereporte'],$fila['codigomenu'],$fila['codigomenupadre'],$fila['orden'],$fila['filtros'],$fila['titulo'],$fila['nombrereporte']);
     header("Location: listareportes.php");
  }
 // Desactiva listado
@@ -191,7 +189,7 @@ if ($rsInformes) {
         print '<tr ' . $bc[$var] . '>'; // <- Aqui se crea las lineas de colores alternos
         print '<input type="hidden" name="codigo' . $i . '" value="' . $rowInformes['rowid'] . '">';
         print '<td width="100" nowrap="nowrap">' . img_picto($langs->trans("MOSTRARRUTA"), "reporte16x16.png@evenxusreports") . $rowInformes['codigo'] . '</td>';
-        print '<td width="100" nowrap="nowrap">' . $rowInformes['nombre'] . '</td>';
+        print '<td width="100" nowrap="nowrap">' . $langs->trans($rowInformes['nombre']) . '</td>';
         print '<td width="150" nowrap="nowrap">' . Modulo_Nombre($rowInformes['modulo']) . '</td>';
         print '<td  width="100" align="left" valign="middle">';
         if (Modulo_Activo($rowInformes['modulo']) == true) {
@@ -206,32 +204,27 @@ if ($rsInformes) {
             }
             print "</a></td>";
         } else {
-            print "módulo-inactivo";
+            print "<div id='modulo-off'>modulo-off</div>";
         }
-
         print '</td>';
-        //Boton de Borrar, Eliminar, Papelera
         print '<td width="50" nowrap="nowrap">';
-       // print '<a href="listareportes.php?action=delete&codigo=' . $rowInformes['codigo'] . '">' . img_delete();
         print '<input id="desinstalar-reporte'.$rowInformes['codigo'].'" type="button" name="desinstalar-reporte'.$rowInformes['codigo'].'"  value="'.$langs->trans("DESINSTALARLISTADO").'" onclick="">';
-
         print $form->formconfirm("listareportes.php?codigo=".$rowInformes['codigo'],$langs->trans("DESINSTALARLISTADOTITULO"),$langs->trans("EXPLICADESINSTALARLISTADO"),"delete","",0,"desinstalar-reporte".$rowInformes['codigo']);           
         print ' &nbsp; &nbsp; ';           
         print "</a></td>";
         print '<td align="left" width="350" valign="middle" colspan="2">';
-        print $rowInformes['detalle'];
+        print $langs->trans($rowInformes['detalle']);
         print "</td>";
         print '</tr>';
         $i++;
     }
     unset($rowInformes);
     $db->free($rsInformes);
-    
-    
-    print '</form>';
-    include("../../evenxus/class/js/checklistcontrol.php");
+    print '</table></form>';
 }
+print '<br><br>'.PiePagina();             
 llxFooter();  // Pie
+
 
 /**
  * Crea la consulta SQL del listado
@@ -270,39 +263,7 @@ function filtros() {
     return $sql;
 }
 
-/**
- * Comprueba que el módulo está activado o no
- * 
- * @param: $nom_modulo . Nombre del módulo. terceros->'societe'
- */
-function Modulo_Activo($nom_modulo) {
-    global $db;
 
-    $sql = "SELECT r.id, r.libelle, r.module";
-    $sql.= " FROM " . MAIN_DB_PREFIX . "rights_def as r";
-    $sql.= " where r.module = '" . $nom_modulo . "'";
-    $sql.= " and r.bydefault=1";
-
-    // Esta sql nos devuelve los módulos y  sus apartados activados en Dolibarr
-
-    $activado = false;  // por defecto desactivado
-    $result = $db->query($sql);
-    if ($result) {
-        $num = $db->num_rows($result);
-        $i = 0;
-        // Miramos si devuelve algún registro, indicará que el módulo existe y está activo
-        while ($i < $num && $activado == false) {
-            $obj = $db->fetch_object($result);
-            $i++;
-            $activado = true;
-        }
-        $db->free($result);
-    } else {
-        // Si activado no ha sido true en ningún momento indicará no está el módulo. 
-        $activado = false;
-    }
-    return $activado;
-}
 
 /**
  * Devuelve el nombre del módulo
@@ -340,7 +301,6 @@ function Modulo_Nombre($nom_modulo) {
                                 }
                             }
                         }
-                        // Load all permissions
                     }
                 }
             }
@@ -368,5 +328,4 @@ function InsertOrUpdateInforme($codigo, $actualizar) {
     return $sql;
 }
 
-?>
- 
+

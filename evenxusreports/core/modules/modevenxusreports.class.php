@@ -19,9 +19,8 @@
  */
 
 require_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
-
 require_once DOL_DOCUMENT_ROOT .'/evenxusreports/class/instalarreportes.php';
-
+require_once DOL_DOCUMENT_ROOT .'/evenxusreports/class/comunes.php';
 
 
 /**
@@ -100,9 +99,11 @@ class modEvenxusReports extends DolibarrModules
 		$this->depends = array();		// List of modules id that must be enabled if this module is enabled
 		$this->requiredby = array();	// List of modules id to disable if this one is disabled
 		$this->phpmin = array(5,0);					// Minimum version of PHP required by module
-		$this->need_dolibarr_version = array(3,0);	// Minimum version of Dolibarr required by module
-		$this->langfiles = array("evenxusreports@evenxusreports");
-
+		$this->need_dolibarr_version = array(3,5);	// Minimum version of Dolibarr required by module
+                
+                // Carga todos los fichero de idiomas del modulo
+                $this->langfiles = CargarIdiomas();
+                
 		// Constants
 		// List of particular constants to add when module is enabled (key, 'chaine', value, desc, visible, 'current' or 'allentities', deleteonunactive)
 		// Example: $this->const=array(0=>array('MYMODULE_MYNEWCONST1','chaine','myvalue','This is a constant to add',1),
@@ -188,7 +189,7 @@ class modEvenxusReports extends DolibarrModules
 		// Declarando nuevos menus
                 $this->menu[0]=array(  'fk_menu'=>0,			        // 0 Es menu superior
                                         'type'=>'top',			        // This is a Top menu entry
-                                        'titre'=>$langs->trans("Reportes"),    
+                                        'titre'=>'Reportes',    
                                         'mainmenu'=>'reportes',
                                         'leftmenu'=>'0',
                                         'url'=>'/evenxusreports/frontend/evenxusreports.php',
@@ -216,7 +217,7 @@ class modEvenxusReports extends DolibarrModules
 		$r++;		
 		$this->menu[4]=array(	'fk_menu'=>'r=3',	
 					'type'=>'left',		
-                                        'titre'=>$langs->trans('CargarReporte'),
+                                        'titre'=>'CargarReporte',
                                         'mainmenu'=>'reportes',
                                         'url'=>'/evenxusreports/frontend/cargarreporte.php',
                                         'langs'=>'evenxusreports@evenxusreports',	
@@ -228,7 +229,7 @@ class modEvenxusReports extends DolibarrModules
 		$r++;		
 		$this->menu[5]=array(	'fk_menu'=>'r=3',	
 					'type'=>'left',		
-                                        'titre'=>$langs->trans('ListaReportes'),
+                                        'titre'=>'ListaReportes',
                                         'mainmenu'=>'reportes',
                                         'url'=>'/evenxusreports/frontend/listareportes.php',
                                         'langs'=>'evenxusreports@evenxusreports',	
@@ -328,6 +329,7 @@ class modEvenxusReports extends DolibarrModules
 	{
 		return $this->_load_tables('/hexagono/sql/');
 	}
+
 }
 
 ?>

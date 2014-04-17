@@ -1,7 +1,7 @@
-# Dolibarr language file - es_ES - help 
+# Dolibarr language file - es_ES - evenxusreports
 CHARSET=UTF-8
-Module770000Name=Evenxus Reports
-Module770000Desc=Reportes avanzados
+Module7700000Name=Evenxus Reports
+Module7700000Desc=Modulo de reportes avanzados
 
 # Menus
 CargarReporte=Cargar reporte
@@ -9,8 +9,8 @@ ListaReportes=Lista reportes
 Reportes=Reportes
 
 # Permisos
-PermitirCargarReportes=Permitir cargar reportes
-PermitirListaReportes=Permitir lista de reportes
+Permission7700001=Permitir cargar reportes
+Permission7700002=Permitir lista de reportes
 
 # Instalar listados
 ExplicaCargaReportes=Aqui puedes cargar un nuevo reporte al sistema de Evenxus Reports, solo tienes que escoger el fichero ZIP del reporte y pulsar en Enviar
@@ -28,6 +28,14 @@ ReporteInstaladoOK=Reporte instalado correctamente...redirigiendo al reporte
 ErrorMenuPrincipal=Error en la instalacion del modulo. No se puede encontrar el menu principal para instalar submenus
 ErrorZIP=Error al descomprimir el instalador. Es posible que no sea un ZIP o este corrupto
 
+# Pantalla Evenxus
+
+Parrafo1=Evenxus Reports es un modulo de Dolibarr para gestión avanzada de informes y graficas desde el navegador Mozilla Firefox.<br><br>Utiliza como "motor" de reportes Jasper Reports lo que permite un diseño avanzado de reportes con la herramiento Jasper Studio. <br><br>Jasper Reports en un motor escrito totalmente en Java y se conecta a Dolibarr mediante un plugin de Mozilla Firefox.<br><br>
+Parrafo2=El plugin contiene todo lo necesario para usar el modulo, y el unico requerimiento para funcionar es que JAVA debe estar instalado en la maquina local.
+Parrafo3=Mas información y soporte :
+Parrafo4=El modulo y el plugin son open source y pueden ser descargadas desde nuestro repositorio en GitHub :
+Parrafo5=Evenxus Reports usa otras librerias y software open source para funcionar : <br><br>- Jasper Report como libreria para manejar reportes<br>- Jasper Studio como herramienta de edicion<br>- Jasperstarter como lanzador de reportes desde script
+
 # Pantalla listados
 LISTADEREPORTESEVENXUS=Listado de reportes instalados
 CampoCodigo=Codigo
@@ -38,6 +46,18 @@ CampDetalle=Detalle
 DESINSTALARLISTADO=Desinstalar
 DESINSTALARLISTADOTITULO=Desinstalar listado
 EXPLICADESINSTALARLISTADO=Al desintalar un listado se borrar del sistema.
+
+# Botonera
+Imprimir=Imprimir
+ImprimirComo=Imprimir como
+VistaPrevia=Vista previa
+ExportarPDF=Exportar a PDF
+ExportarWord=Exportar a Word
+ExportarExcel=Exportar a Excel
+ExportarPowerPoint=Exportar a Powerpoint
+ExportarODT=Exportar a Open Document Text
+ExportarODS=Exportar a Open Document Calc
+ExportarCSV=Exportar a CSV file
 
 # Filtros
 Desde=Desde
