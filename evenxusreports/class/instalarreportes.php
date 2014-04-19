@@ -32,50 +32,45 @@
  */
 function CrearMenu($CodigoReporte, $NombreReporte, $CodigoMenu, $CodigoMenuPadre, $position, $NombrePHP, $Titulo, $NombrePermiso) {
     $InsertId = 0;
-
     global $db;
-
     require_once DOL_DOCUMENT_ROOT . '/evenxus/class/datos.php';
     $de = new DatosEvenxus();
-
+// Asginamos fk_menu o id de menu padre
+    if ($CodigoMenuPadre == -1) {  // Menu superior
+        $fk_menu = ObtenerIDMenuSuperior();
+    } else {
+// Si no es un menu superior consulta el id actual de su padre
+        $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE codigomenu='$CodigoMenuPadre'";
+        $fk_menu = $de->Valor($sql, "idactual");
+    }
+// Si no lleva nombre de permiso se permite siempre
+    if ($NombrePermiso == '') {
+        $permiso = "1";
+    } else {
+        $permiso = "\$user->rights->evenxusreports->reports->$NombrePermiso";
+    }
 // Comprobamos si el modulo al que pertenece esta activo antes de crear el menu...
     $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_reports WHERE codigo='$CodigoReporte'";
     $modulo = $de->Valor($sql, "modulo");
-
-    if (Modulo_Activo($modulo)) {
-// Asginamos fk_menu o id de menu padre
-        if ($CodigoMenuPadre == -1) {  // Menu superior
-            $fk_menu = ObtenerIDMenuSuperior();
-        } else {
-// Si no es un menu superior consulta el id actual de su padre
-            $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE codigomenu='$CodigoMenuPadre'";
-            $fk_menu = $de->Valor($sql, "idactual");
-        }
-// Si no lleva nombre de permiso se permite siempre
-        if ($NombrePermiso == '') {
-            $permiso = "1";
-        } else {
-            $permiso = "\$user->rights->evenxusreports->reports->$NombrePermiso";
-        }
+// Si esta activo procedemos a crear los menus de Dolibarr
+    if (ModuloActivo($modulo)) {
 // Alta en menu dolibarr
         $sql = "INSERT INTO " . MAIN_DB_PREFIX . "menu (menu_handler, module, type, mainmenu, fk_menu, position, url, titre, langs, perms) " .
                 "VALUES ('all', 'evenxusreports', " .
                 "'left', 'reportes', $fk_menu, $position, " .
                 "'/evenxusreports/frontend/$NombrePHP', '$Titulo', '$NombreReporte@evenxusreports', '$permiso');";
         $db->query($sql);
-
+// Obtenemos el ID que ha resultado de la insercion en los menus 
+        $InsertId = $de->Valor("SELECT * FROM " . MAIN_DB_PREFIX . "menu WHERE fk_menu='$fk_menu' AND position='$position' AND url='/evenxusreports/frontend/$NombrePHP'", "rowid");
+    }
 // Archivamos en nuestro gestor de menus
 // Primero borramos menu anterior si lo hay con el mismo ID
-        $sql = "DELETE FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE codigomenu=$CodigoMenu";
-        $db->query($sql);
+    $sql = "DELETE FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE codigomenu=$CodigoMenu";
+    $db->query($sql);
 
-// Obtenemos el ID que ha resultado de la insercion en los menus de Dolibarr
-        $InsertId = $de->Valor("SELECT * FROM " . MAIN_DB_PREFIX . "menu WHERE fk_menu='$fk_menu' AND position='$position' AND url='/evenxusreports/frontend/$NombrePHP'", "rowid");
-
-        $sql = "INSERT INTO " . MAIN_DB_PREFIX . "evr_menu_reports (codigoreporte,nombrereporte,codigomenu,codigomenupadre,idactual,orden,filtros,titulo) " .
-                "VALUES ($CodigoReporte,'$NombreReporte',$CodigoMenu,$CodigoMenuPadre,'$InsertId','$position','$NombrePHP','$Titulo');";
-        $db->query($sql);
-    }
+    $sql = "INSERT INTO " . MAIN_DB_PREFIX . "evr_menu_reports (codigoreporte,nombrereporte,codigomenu,codigomenupadre,idactual,orden,filtros,titulo) " .
+            "VALUES ($CodigoReporte,'$NombreReporte',$CodigoMenu,$CodigoMenuPadre,'$InsertId','$position','$NombrePHP','$Titulo');";
+    $db->query($sql);
     return $InsertId;
 }
 
@@ -117,22 +112,32 @@ function AddIdioma($codigoreporte, $nombrereporte, $idioma) {
 /**
  * Añade un reporte a la base de datos, si existe uno anterior con el mismo codigo lo borra primero
  * 
+ * Comprueba si el modulo al que pertecence el reporte esta activo, sino lo esta no deja instalarlo
+ * 
  * @global type $db
  * @param type $codigo      Codigo de reporte
  * @param type $nombre      Nombre del reporte
  * @param type $modulo      Modulo del reporte
  * @param type $detalle     Descripccion del reporte
  * @param type $ficheros    Ficheros con ruta relativa completa que componen el reporte (separados por comas)
- * @param type $activo      Indica si el reporte esta activo 1 o no 0
- */
-function AddReporte($codigo, $nombre, $modulo, $detalle, $ficheros, $activo) {
+  */
+function AddReporte($codigo, $nombre, $modulo, $detalle, $ficheros) {
     global $db;
+    global $langs;
+    $ok=true;
+    if (ModuloActivo($modulo)) {
 // REPORTES
-    $sql = "DELETE FROM " . MAIN_DB_PREFIX . "evr_reports WHERE codigo=$codigo";
-    $db->query($sql);
-    $sql = "INSERT INTO " . MAIN_DB_PREFIX . "evr_reports (codigo,nombre,modulo,detalle,ficheros,activo) " .
-            "VALUES ($codigo,'$nombre','$modulo','$detalle','$ficheros',$activo);";
-    $db->query($sql);
+        $sql = "DELETE FROM " . MAIN_DB_PREFIX . "evr_reports WHERE codigo=$codigo";
+        $db->query($sql);
+        $sql = "INSERT INTO " . MAIN_DB_PREFIX . "evr_reports (codigo,nombre,modulo,detalle,ficheros,activo) " .
+                "VALUES ($codigo,'$nombre','$modulo','$detalle','$ficheros',1);";
+        $db->query($sql);
+        $ok=true;
+    } else {
+        print $langs->trans("ErrorInstalaReporteModuloInactivo")."<br>";        
+        $ok=false;
+    }
+    return $ok;
 }
 
 /**

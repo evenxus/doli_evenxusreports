@@ -54,27 +54,49 @@ function PiePagina() {
 }
 
 /**
- * Devuelve si un reporte esta o no activo
+ * Devuelve si un reporte esta o no activo segun su variable de estado y de como esta su modulo dependiente
  * 
  * @global type $db
  * @param type $CodigoReporte
  */
 function ReporteActivo($CodigoReporte) {
+    $activo=false;
     $de = new DatosEvenxus();
     $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_reports WHERE codigo=" . $CodigoReporte;
-    $activo = $de->Valor($sql, "activo");
+    $reporteactivo = $de->Valor($sql, "activo");
+    $modulo = $de->Valor($sql, "modulo");
+    $moduloactivo = ModuloActivo($modulo);
+    if ($reporteactivo==true and $moduloactivo==true) {
+        $activo=true;
+    }
     return $activo;
 }
 
 /**
  * Comprueba que el módulo está activado o no
  * 
- * @param: $nom_modulo . Nombre del módulo. terceros->'societe'
+ * @param: $NombreModulo . Nombre del módulo. terceros->'societe'
  */
-function Modulo_Activo($nom_modulo) {
+function ModuloActivo($NombreModulo) {
     global $conf;
-    $activado = in_array($nom_modulo, $conf->modules);
+    $activado = in_array($NombreModulo, $conf->modules);
     return $activado;
+}
+/**
+ * 
+ * Redireccion a error por reporte desactivado
+ * 
+ */
+function ReporteDesactivado() {
+    header("Location: reporteoff.php");
+}
+/**
+ * 
+ * Redireccion a error por reporte desactivado
+ * 
+ */
+function ReporteProhibido() {
+    header("Location: reporteprohibido.php");
 }
 
 /**

@@ -144,10 +144,15 @@ function CargarReporte($Reporte) {
             $BP->ActualizarPantalla();
             BorrarCarpeta("../upload");
             mkdir("../upload");
-            print $langs->trans("ReporteInstaladoOK")."<br>"; 
+            if ($installOK) {
+                print $langs->trans("ReporteInstaladoOK")."<br>"; 
+            }
+            else {
+                print $langs->trans("ReporteInstaladoKO")."<br>"; 
+            }   
             $BP->ActualizarPantalla();
-            sleep(3);
-            $Redirigir=DOL_MAIN_URL_ROOT."/evenxusreports/frontend/".$NombreFiltros;
+            sleep(5);
+            $Redirigir=DOL_MAIN_URL_ROOT."/evenxusreports/frontend/listareportes.php";
             print "<script language='javascript'>window.location='$Redirigir'</script>;";
         }
         else {

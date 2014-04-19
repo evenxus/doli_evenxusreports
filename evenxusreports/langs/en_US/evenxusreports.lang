@@ -24,8 +24,10 @@ InstalandoFiltrosReporte=Install report filters...
 CreandoMenus=Creatings menus...
 CreandoReporte=Creating reports...
 CreandoPermisosReporte=Creating permits...
-ReporteInstaladoOK=Reports installed correctly...redirecting to report
+ReporteInstaladoOK=Report installed correctly...
+ReporteInstaladoKO=Report installed with errors...
 ErrorMenuPrincipal=Error in report installation. Can not find the main menu to install submenus
+ErrorInstalaReporteModuloInactivo=The report will not install, belongs to an inactive or not installed module
 ErrorZIP=Error in unzip installer. It may not be a ZIP or this corrupt
 
 # Pantalla Evenxus
@@ -46,6 +48,12 @@ CampDetalle=Detail
 DESINSTALARLISTADO=Uninstall
 DESINSTALARLISTADOTITULO=Uninstall report
 EXPLICADESINSTALARLISTADO=When you uninstall a report, this is deleted from the system
+
+#Pantallas varias
+ReporteOFF=REPORT DISABLED
+ReporteOFFRazon= The report is disabled by admin or the module of the report is disabled
+AccesoOFF=REPORT FORBIDDEN
+AccesoOFFRazon= The report access is disabled by admin
 
 # Botonera
 Imprimir=Print

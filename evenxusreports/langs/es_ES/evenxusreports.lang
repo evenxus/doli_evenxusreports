@@ -24,8 +24,10 @@ InstalandoFiltrosReporte=Instalando filtros del reporte...
 CreandoMenus=Creando menus...
 CreandoReporte=Creando reporte...
 CreandoPermisosReporte=Creando permisos reporte...
-ReporteInstaladoOK=Reporte instalado correctamente...redirigiendo al reporte
+ReporteInstaladoOK=Reporte instalado correctamente...
+ReporteInstaladoKO=Error al instalar el reporte...
 ErrorMenuPrincipal=Error en la instalacion del modulo. No se puede encontrar el menu principal para instalar submenus
+ErrorInstalaReporteModuloInactivo=El reporte no se instalara, pertenece a un modulo inactivo o no instalado
 ErrorZIP=Error al descomprimir el instalador. Es posible que no sea un ZIP o este corrupto
 
 # Pantalla Evenxus
@@ -46,6 +48,12 @@ CampDetalle=Detalle
 DESINSTALARLISTADO=Desinstalar
 DESINSTALARLISTADOTITULO=Desinstalar listado
 EXPLICADESINSTALARLISTADO=Al desintalar un listado se borrar del sistema.
+
+#Pantallas varias
+ReporteOFF=REPORTE DESACTIVADO
+ReporteOFFRazon= El reporte ha sido desactivado por el administrador o el modulo del reporte esta desactvidado
+AccesoOFF=REPORTE NO ACCESIBLE
+AccesoOFFRazon= El acceso ha sido prohibido por un administrador
 
 # Botonera
 Imprimir=Imprimir

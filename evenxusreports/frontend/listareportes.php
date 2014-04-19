@@ -71,10 +71,13 @@ if ($action == 'set') {
     $results = $Datos->Query($sqlactualizar);
     // Crear menu
     $de = new DatosEvenxus();
-    $sql="SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigomenu=".$codigo;
+    $sql="SELECT * FROM ".MAIN_DB_PREFIX."evr_menu_reports WHERE codigoreporte=".$codigo." ORDER by codigomenupadre";
     $results = $Datos->Query($sql);
     $fila = $results->fetch_array();
-    CrearMenu($fila['codigoreporte'],$fila['nombrereporte'],$fila['codigomenu'],$fila['codigomenupadre'],$fila['orden'],$fila['filtros'],$fila['titulo'],$fila['nombrereporte']);
+    while ($fila) {
+        CrearMenu($fila['codigoreporte'],$fila['nombrereporte'],$fila['codigomenu'],$fila['codigomenupadre'],$fila['orden'],$fila['filtros'],$fila['titulo'],$fila['nombrereporte']);
+         $fila = $results->fetch_array();
+    }    
     header("Location: listareportes.php");
  }
 // Desactiva listado
@@ -192,7 +195,7 @@ if ($rsInformes) {
         print '<td width="100" nowrap="nowrap">' . $langs->trans($rowInformes['nombre']) . '</td>';
         print '<td width="150" nowrap="nowrap">' . Modulo_Nombre($rowInformes['modulo']) . '</td>';
         print '<td  width="100" align="left" valign="middle">';
-        if (Modulo_Activo($rowInformes['modulo']) == true) {
+        if (ModuloActivo($rowInformes['modulo']) == true) {
             // Module non actif
             $seleccionado = $rowInformes['activo'];
             if ($seleccionado == 1) {
