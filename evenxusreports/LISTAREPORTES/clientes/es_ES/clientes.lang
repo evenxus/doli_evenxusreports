@@ -1,7 +1,8 @@
-# Dolibarr language file - es_ES - help 
+# Dolibarr language file - es_ES
 CHARSET=UTF-8
 
 Terceros=Terceros
 Clientes=Clientes
+societe=Clientes
 ListadoClientes=Listado de Clientes
-PermitirUsarListadoClientes=Permitir usar el listado de clientes
+Permission8001001=Permitir el acceso al listado de clientes

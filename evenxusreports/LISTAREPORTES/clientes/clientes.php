@@ -27,8 +27,8 @@ $reporte = "clientes";
 $actualizar_report_auto=1;
 
 // Seguridad
-if (!$user->rights->evenxusreports->reports->clientes) accessforbidden(); 
-if (ReporteActivo($CodigoReporte)==0) accessforbidden(); 
+if (!$user->rights->evenxusreports->reports->clientes) ReporteProhibido(); 
+if (ReporteActivo($CodigoReporte)==false) ReporteDesactivado(); 
 
 
 
@@ -42,7 +42,7 @@ llxHeader($c,"",$langs->trans(""));
 
 $Filtros = new filtros();
 
-print_fiche_titre("Listado de Clientes","","../img/reporte.png",1);
+print_fiche_titre($langs->trans("ListadoClientes"),"","../img/reporte.png",1);
 print SaltaLinea(1);
 // *****************************************************************************************************************************
 // Filtros

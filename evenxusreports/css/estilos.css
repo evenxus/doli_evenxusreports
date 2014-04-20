@@ -2,7 +2,14 @@
 div.mainmenu.reportes {
 	background-image: url(../img/reporte.png)!important;
 }
-
+/* Config ***********************************************************************************************************************************/ 
+.botonconfig {
+    width: 150px;
+}
+#buttongapconfig {
+    display: inline-block; 
+    width: 25px;
+}
 /* Pantalla info modulo *********************************************************************************************************************/ 
 #logoevenxus {
     width: 150px;

@@ -120,11 +120,11 @@ function AddIdioma($codigoreporte, $nombrereporte, $idioma) {
  * @param type $modulo      Modulo del reporte
  * @param type $detalle     Descripccion del reporte
  * @param type $ficheros    Ficheros con ruta relativa completa que componen el reporte (separados por comas)
-  */
+ */
 function AddReporte($codigo, $nombre, $modulo, $detalle, $ficheros) {
     global $db;
     global $langs;
-    $ok=true;
+    $ok = true;
     if (ModuloActivo($modulo)) {
 // REPORTES
         $sql = "DELETE FROM " . MAIN_DB_PREFIX . "evr_reports WHERE codigo=$codigo";
@@ -132,10 +132,10 @@ function AddReporte($codigo, $nombre, $modulo, $detalle, $ficheros) {
         $sql = "INSERT INTO " . MAIN_DB_PREFIX . "evr_reports (codigo,nombre,modulo,detalle,ficheros,activo) " .
                 "VALUES ($codigo,'$nombre','$modulo','$detalle','$ficheros',1);";
         $db->query($sql);
-        $ok=true;
+        $ok = true;
     } else {
-        print $langs->trans("ErrorInstalaReporteModuloInactivo")."<br>";        
-        $ok=false;
+        print $langs->trans("ErrorInstalaReporteModuloInactivo") . "<br>";
+        $ok = false;
     }
     return $ok;
 }

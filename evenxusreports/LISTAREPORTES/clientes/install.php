@@ -17,22 +17,39 @@
  
 $idReporte			=	8001001;
 $NombreReporte		=   "clientes";
+$ModuloReporte		=	"societe";
 
 $NombreJasper 		=   $NombreReporte.".jasper";
 $NombreIdiomaJasper = 	$NombreReporte.".properties";
 $NombreFiltros		=   $NombreReporte.".php";
 $NombreIdioma 		=   $NombreReporte.".lang";
 
-// Cargamos idiomas Doli
+// Ficheros de la desinstalacion ( Son todos los ficheros instalados despues )
+$ficheros=	 "/frontend/".$NombreFiltros.
+			",/langs/es_ES/".$NombreIdioma.
+			",/langs/en_US/".$NombreIdioma.
+			",/reports/".$NombreJasper.
+			",/img/tiles/".$NombreReporte.".png".			
+			",/reports/en_US/".$NombreIdiomaJasper.
+			",/reports/es_ES/".$NombreIdiomaJasper;
+// Creamos reporte
+$installOK=AddReporte($idReporte, "Clientes",$ModuloReporte,"ListadoClientes",$ficheros);
+
+if ($installOK)
+{
+// Cargamos idiomas de Dolibarr
 rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/es_ES/".$NombreIdioma,DOL_DOCUMENT_ROOT."/evenxusreports/langs/es_ES/".$NombreIdioma); // Español
+rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/en_US/".$NombreIdioma,DOL_DOCUMENT_ROOT."/evenxusreports/langs/en_US/".$NombreIdioma); // Ingles
+// Añadimos idioma 
+AddIdioma($idReporte,$NombreReporte,$NombreIdioma);
 // Cargamos idiomas del reporte
-$langs->load("clientes@evenxusreports");
+$langs->load($NombreReporte."@evenxusreports");
 
 // Cargamos reporte.jasper
 print $langs->trans("InstalandoFicheroReporte")."<br>"; 
 rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/".$NombreJasper,DOL_DOCUMENT_ROOT."/evenxusreports/reports/".$NombreJasper);
 // Creando carpetas de idiomas jasper
-rcopy(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/en_GB/",DOL_DOCUMENT_ROOT."/evenxusreports/reports/en_GB/");
+rcopy(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/en_US/",DOL_DOCUMENT_ROOT."/evenxusreports/reports/en_US/");
 rcopy(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/es_ES/",DOL_DOCUMENT_ROOT."/evenxusreports/reports/es_ES/");
 
 // Cargamos pantalla de filtros
@@ -42,22 +59,17 @@ rename("../upload/".$NombreReporte."/".$NombreFiltros,"../frontend/".$NombreFilt
 // Creamos entradas de Menu
 print $langs->trans("CreandoMenus")."<br>"; 
 // Padre (Menu de grupo) por eso el -1
-CrearMenu($idReporte,$NombreReporte,8001000,-1,"100001","clientes.php","Terceros",""); 
+CrearMenu($idReporte,$NombreReporte,8001000,-1,"100001",$NombreFiltros,"Terceros",""); 
 // Entrada menu
 CrearMenu($idReporte,$NombreReporte,8001001,8001000,"100002",$NombreFiltros,"Clientes",$NombreReporte);
 
 // Creamos entrada de reporte en base de datos para activacion y desinstalacion
 print $langs->trans("CreandoReporte")."<br>"; 
 
-// Ficheros de la desinstalacion
-$ficheros=	 "/frontend/".$NombreFiltros.
-			",/langs/es_ES/".$NombreIdioma.
-			",/reports/".$NombreJasper.
-			",/reports/en_GB/".$NombreIdiomaJasper.
-			",/reports/es_ES/".$NombreIdiomaJasper;
-							 
-AddReporte($idReporte, "Clientes","societe","ListadoClientes",$ficheros,1);
+// Copiamos tile
+rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/tile.png",DOL_DOCUMENT_ROOT."/evenxusreports/img/tiles/".$NombreReporte.".png"); 
+						 
 // Creamos enlace de seguridad
 print $langs->trans("CreandoPermisosReporte")."<br>"; 
 AddPermiso($idReporte,"PermitirUsarListadoClientes",$NombreReporte);
-
+}

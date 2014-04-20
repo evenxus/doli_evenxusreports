@@ -12,6 +12,27 @@ Reportes=Reportes
 Permission7700001=Permitir cargar reportes
 Permission7700002=Permitir lista de reportes
 
+# Frontend
+Todos=Todos
+
+# Configuracion
+ConfigurarReportes=Configurar reportes
+DescargarPlugin=Instalar plugin
+AdquirirReporte=Adquirir reporte
+AcercaDe=Acerca de...
+ParrafoConfig1=Evenxus Reports es codigo fuente libre, si quieres obtener nuevos reportes consultanos
+
+# Adquirir reporte
+AsksForm=Adquirir nuevo reporte
+NewReport1=Evenxus le ofrece la posibilidad de diseñar cualquier tipo de reporte, ya sea para un modulo estandard o para uno a medida
+NewReport2=Los reportes creados de este modo son totalmente Open Source y su coste depende del tipo de reporte. Rellene este formulario y le haremos un estudio de coste
+SampleFilter=Filtros que se usaran para el reporte.
+SampleDesc=Descripcción detallada del repote. Sobre que se aplica, que se quiere obtener, particularidades...
+NombreCliente=Nombre cliente
+SolveIt=Rellene los datos de contacto (Inicio->Configuración->Empresa/Institución y/o complete su ficha de usuario)<br>Rellene los campos filtro y descripción 
+Send=Enviar
+Anular=Cancelar
+
 # Instalar listados
 ExplicaCargaReportes=Aqui puedes cargar un nuevo reporte al sistema de Evenxus Reports, solo tienes que escoger el fichero ZIP del reporte y pulsar en Enviar
 Enviar=Cargar
