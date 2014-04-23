@@ -12,6 +12,16 @@ Reportes=Reports
 Permission7700001=Allow install new repot
 Permission7700002=Edit report list
 
+# Frontend
+Todos=All
+
+# Configuracion
+ConfigurarReportes=Reports config
+DescargarPlugin=Install plugin
+AdquirirReporte=Obtain a report
+AcercaDe=About...
+ParrafoConfig1=Evenxus is open source, if you need new reports consult us
+
 # Instalar listados
 ExplicaCargaReportes=Here, you can install a new report to Evenxus Reports system, only choose the ZIP that contain report an clic in Load
 Enviar=Load

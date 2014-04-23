@@ -54,14 +54,20 @@ function CrearMenu($CodigoReporte, $NombreReporte, $CodigoMenu, $CodigoMenuPadre
     $modulo = $de->Valor($sql, "modulo");
 // Si esta activo procedemos a crear los menus de Dolibarr
     if (ModuloActivo($modulo)) {
+        $IdMenu = $de->Valor("SELECT * FROM " . MAIN_DB_PREFIX . "menu WHERE fk_menu='$fk_menu' AND position='$position' AND url='/evenxusreports/frontend/$NombrePHP'", "rowid");    
+        if ($IdMenu=="") {
 // Alta en menu dolibarr
-        $sql = "INSERT INTO " . MAIN_DB_PREFIX . "menu (menu_handler, module, type, mainmenu, fk_menu, position, url, titre, langs, perms) " .
+            $sql = "INSERT INTO " . MAIN_DB_PREFIX . "menu (menu_handler, module, type, mainmenu, fk_menu, position, url, titre, langs, perms) " .
                 "VALUES ('all', 'evenxusreports', " .
                 "'left', 'reportes', $fk_menu, $position, " .
                 "'/evenxusreports/frontend/$NombrePHP', '$Titulo', '$NombreReporte@evenxusreports', '$permiso');";
-        $db->query($sql);
+            $db->query($sql);
 // Obtenemos el ID que ha resultado de la insercion en los menus 
-        $InsertId = $de->Valor("SELECT * FROM " . MAIN_DB_PREFIX . "menu WHERE fk_menu='$fk_menu' AND position='$position' AND url='/evenxusreports/frontend/$NombrePHP'", "rowid");
+            $InsertId = $de->Valor("SELECT * FROM " . MAIN_DB_PREFIX . "menu WHERE fk_menu='$fk_menu' AND position='$position' AND url='/evenxusreports/frontend/$NombrePHP'", "rowid");
+        }
+        else {
+            $InsertId = $IdMenu;
+        }
     }
 // Archivamos en nuestro gestor de menus
 // Primero borramos menu anterior si lo hay con el mismo ID
@@ -73,6 +79,7 @@ function CrearMenu($CodigoReporte, $NombreReporte, $CodigoMenu, $CodigoMenuPadre
     $db->query($sql);
     return $InsertId;
 }
+
 
 /**
  * Devuelve el id del menu superior de evenxusreports
@@ -218,44 +225,41 @@ function BorrarReporte($codigo) {
     require_once DOL_DOCUMENT_ROOT . '/evenxus/class/datos.php';
     $de = new DatosEvenxus();
 
-// Recorremos backup menus de listados para borrar los menus en orden
+// Borramos menu
     $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE codigomenupadre>-1 AND codigoreporte=" . $codigo;
     $res = $db->query($sql);
     if ($res > 0) {
         $fila = $res->fetch_array();
-        while ($fila) {
-            $rowid = $fila[rowid];
+        if ($fila) {
+            $rowid    = $fila[rowid];
             $idactual = $fila[idactual];
+            $idPadre  = $fila[codigomenupadre];
             $sql = "DELETE FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE rowid=$rowid";
             $db->query($sql);
             $sql = "DELETE FROM " . MAIN_DB_PREFIX . "menu WHERE rowid=$idactual";
             $db->query($sql);
-            $fila = $res->fetch_array();
         }
     }
-// Comprobamos menus "padre" sin hijos y lo eliminamos
-    $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE codigoreporte=" . $codigo;
+// Borrando padres "sin hijos"
+    $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE codigomenupadre=-1"; 
     $res = $db->query($sql);
     if ($res > 0) {
         $fila = $res->fetch_array();
-        while ($fila) {
-            $rowid = $fila[rowid];
+        while ($fila) {    
+            $rowid    = $fila[rowid];
             $idactual = $fila[idactual];
-            $codigomenu = $fila[codigomenu];
-            $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE codigomenupadre=$codigomenu";
+            $idMenu  = $fila[codigomenu];
+            $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE codigomenupadre=".$idMenu; 
             $n = $de->Existe($sql);
-            if ($n == 0) {
-// Borramos menus
+            if ($n==0) {
                 $sql = "DELETE FROM " . MAIN_DB_PREFIX . "evr_menu_reports WHERE rowid=$rowid";
                 $db->query($sql);
                 $sql = "DELETE FROM " . MAIN_DB_PREFIX . "menu WHERE rowid=$idactual";
-                $db->query($sql);
-                $fila = $res->fetch_array();
+                $db->query($sql);                
             }
             $fila = $res->fetch_array();
         }
-    }
-
+    }    
 // Borrando definicion de permisos    
     $sql = "DELETE FROM " . MAIN_DB_PREFIX . "evr_def_permisos WHERE id=$codigo";
     $db->query($sql);

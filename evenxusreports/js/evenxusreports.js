@@ -65,28 +65,30 @@ function ParametrosComunesReporte(Reporte,Modo,Idioma,Salida) {
             
             params[i++]  =  '-r';
             params[i++]  =  Idioma;
+            
+            params[i++]  =  '-P';
             return params;
 }
 function EvenxusElegirCarpeta(idioma,origen) {
         try {
-        var element = document.createElement("EvenxusLocal");
-        element.setAttribute("param0", idioma);
-        element.setAttribute("param1", origen);
+        var element = document.createElement('EvenxusLocal');
+        element.setAttribute('param0', idioma);
+        element.setAttribute('param1', origen);
         document.documentElement.appendChild(element);
-        element.setAttribute("errorMessage", "Unexpected error");
-        var ev = document.createEvent("Events");
-	ev.initEvent("Evenxus_Elegir_Carpeta", true, false); // Lanzo evento de impresion
+        element.setAttribute('errorMessage', 'Unexpected error');
+        var ev = document.createEvent('Events');
+	ev.initEvent('Evenxus_Elegir_Carpeta', true, false); // Lanzo evento de impresion
         element.dispatchEvent(ev);
         // Error de instalacion del complemento
-        if (!element.hasAttribute("evenxus_load_ok")) {
-            return "El plugin Evenxus Reports(Firefox) no esta instalado";
+        if (!element.hasAttribute('evenxus_load_ok')) {
+            return 'El plugin Evenxus Reports(Firefox) no esta instalado';
         }
         document.documentElement.removeChild(element);
         } catch(e) {
             setTimeout(function() { throw e; }, 0);
-            return "Error no controlado";
+            return 'Error no controlado';
         }
-        return element.getAttribute("errorMessage");
+        return element.getAttribute('errorMessage');
 }
 /**
  * Funcion EvenxusLanzarReport
@@ -115,25 +117,25 @@ function EvenxusLanzarReport(params,actualizar,rutadescarga,reporte)
                 if (err!==null) { alert(err);   return err; }            
       }
       try {
-        var element = document.createElement("EvenxusLocal");
+        var element = document.createElement('EvenxusLocal');
         for (var i=0; i<params.length; i++) {
-            element.setAttribute("param"+i, params[i]);
+            element.setAttribute('param'+i, params[i]);
         }
         document.documentElement.appendChild(element);
-        element.setAttribute("errorMessage", "Unexpected error");
-        var ev = document.createEvent("Events");
-	ev.initEvent("Evenxus_LanzarJasper", true, false); // Lanzo evento de impresion
+        element.setAttribute('errorMessage', 'Unexpected error');
+        var ev = document.createEvent('Events');
+	ev.initEvent('Evenxus_LanzarJasper', true, false); // Lanzo evento de impresion
         element.dispatchEvent(ev);
         // Error de instalacion del complemento
-        if (!element.hasAttribute("evenxus_load_ok")) {
-            return "El plugin Evenxus Reports(Firefox) no esta instalado";
+        if (!element.hasAttribute('evenxus_load_ok')) {
+            return 'El plugin Evenxus Reports(Firefox) no esta instalado';
         }
         document.documentElement.removeChild(element);
         } catch(e) {
             setTimeout(function() { throw e; }, 0);
-            return "Error no controlado";
+            return 'Error no controlado';
         }
-        return element.getAttribute("errorMessage");
+        return element.getAttribute('errorMessage');
 }
 /**
  * Funcion EvenxusActualizarReport
@@ -141,25 +143,25 @@ function EvenxusLanzarReport(params,actualizar,rutadescarga,reporte)
 function EvenxusActualizarReport()
 {
       try {
-        var element = document.createElement("EvenxusLocal");
+        var element = document.createElement('EvenxusLocal');
         for (var i=0; i<arguments.length; i++) {
-            element.setAttribute("param"+i, arguments[i]);
+            element.setAttribute('param'+i, arguments[i]);
         }
         document.documentElement.appendChild(element);
-        element.setAttribute("errorMessage", "Unexpected error");
-        var ev = document.createEvent("Events");
-	ev.initEvent("Evenxus_Actualizar_Reportes", true, false); // Lanzo evento de impresion
+        element.setAttribute('errorMessage', 'Unexpected error');
+        var ev = document.createEvent('Events');
+	ev.initEvent('Evenxus_Actualizar_Reportes', true, false); // Lanzo evento de impresion
         element.dispatchEvent(ev);
         // Error de instalacion del complemento
-        if (!element.hasAttribute("evenxus_load_ok")) {
-            return "El plugin Evenxus Reports(Firefox) no esta instalado";
+        if (!element.hasAttribute('evenxus_load_ok')) {
+            return 'El plugin Evenxus Reports(Firefox) no esta instalado';
         }
         document.documentElement.removeChild(element);
       } catch(e) {
         setTimeout(function() { throw e; }, 0);
-        return "Error no controlado";
+        return 'Error no controlado';
       }
-      return element.getAttribute("errorMessage");
+      return element.getAttribute('errorMessage');
 }
 /**
  * Funcion EvenxusActualizarReport
@@ -167,25 +169,25 @@ function EvenxusActualizarReport()
 function EvenxusActualizarReportIdioma()
 {
       try {
-        var element = document.createElement("EvenxusLocal");
+        var element = document.createElement('EvenxusLocal');
         for (var i=0; i<arguments.length; i++) {
-            element.setAttribute("param"+i, arguments[i]);
+            element.setAttribute('param'+i, arguments[i]);
         }
         document.documentElement.appendChild(element);
-        element.setAttribute("errorMessage", "Unexpected error");
-        var ev = document.createEvent("Events");
-	ev.initEvent("Evenxus_Actualizar_Reportes_Idiomas", true, false); // Lanzo evento de impresion
+        element.setAttribute('errorMessage', 'Unexpected error');
+        var ev = document.createEvent('Events');
+	ev.initEvent('Evenxus_Actualizar_Reportes_Idiomas', true, false); // Lanzo evento de impresion
         element.dispatchEvent(ev);
         // Error de instalacion del complemento
-        if (!element.hasAttribute("evenxus_load_ok")) {
-            return "El plugin Evenxus Reports(Firefox) no esta instalado";
+        if (!element.hasAttribute('evenxus_load_ok')) {
+            return 'El plugin Evenxus Reports(Firefox) no esta instalado';
         }
         document.documentElement.removeChild(element);
       } catch(e) {
         setTimeout(function() { throw e; }, 0);
-        return "Error no controlado";
+        return 'Error no controlado';
       }
-      return element.getAttribute("errorMessage");
+      return element.getAttribute('errorMessage');
 }
 // Exportacion con pantalla de seleccion de carpeta
 function ExportarReporteCarpeta(Modo) {
@@ -204,7 +206,7 @@ function VistaPreviaReporte() {
 // Imprimir en impresora seleccionada en el plugin
 // O en otra mediante parametro : \'print\|-N|PDFCreator\' 
 function ImprimirReporte(Modo) {
-    if (arguments.length === 0) { Modo="print";}
+    if (arguments.length === 0) { Modo='print';}
     ProcesarReporte(Modo,0);
 }
 // Imprimir con cuadro de seleccion de impresora

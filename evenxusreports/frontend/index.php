@@ -18,6 +18,9 @@
 require_once('../../main.inc.php');		
 require_once DOL_DOCUMENT_ROOT . '/evenxusreports/class/comunes.php';
 
+
+$module = GETPOST('module', 'alpha');
+
 // Carga idiomas de todos los reportes
 $idiomas=CargarIdiomas();
 foreach ($idiomas as &$idioma) {
@@ -56,7 +59,13 @@ print "</center>";
 print "<br>";
 print PiePagina();   
 llxFooter();
-
+print "<script type='text/javascript'>
+    $(document).ready(function() {
+    document.getElementById('".$module."').click();
+    // OR
+    $('".$module."')[0].click();
+});
+</script>";
 print "<script type='text/javascript'>
 
     function AcercaDe()  {
@@ -80,7 +89,7 @@ function CargarTags() {
         $fila = $res->fetch_array();
         while ($fila) {
             $modulo = $fila[modulo];
-            $tags=$tags."<li><a href='#".$langs->trans($modulo)."' title=''>".$langs->trans($modulo)."</a></li>";
+            $tags=$tags."<li><a id='".$langs->trans($modulo)."' href='#".$langs->trans($modulo)."' title=''>".$langs->trans($modulo)."</a></li>";
             $fila = $res->fetch_array();
         }
     }            
@@ -95,7 +104,7 @@ function CargarTilesReportes() {
     global $db;
     global $langs;
     $tags="";
-    $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_reports WHERE activo=1 GROUP BY modulo ORDER BY nombre";
+    $sql = "SELECT * FROM ".MAIN_DB_PREFIX."evr_reports WHERE activo=1 ORDER BY nombre";
     $res = $db->query($sql);
     if ($res > 0) {
         $fila = $res->fetch_array();
@@ -104,7 +113,7 @@ function CargarTilesReportes() {
             $nombre = $fila[nombre];
             $nombrephp = strtolower($nombre.".php");
             $tags=$tags ." <li style='display: block;' class='todos ".$langs->trans($modulo)."'> <a href='".$nombrephp."' title=''><img src='../img/tiles/".strtolower($nombre).".png' alt=''></a>
-                           <p> ".$nombre. " </p>
+                           <p> ".$langs->trans($nombre). " </p>
                            </li>";
             $fila = $res->fetch_array();
         }

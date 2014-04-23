@@ -25,7 +25,7 @@
  *     \brief      Page to show info to ask reports
  */
 require_once ("../../main.inc.php");                 // Acceso al main de Doli, obligatorio
-require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.form.class.php");
 
 $langs->load("companies");
 

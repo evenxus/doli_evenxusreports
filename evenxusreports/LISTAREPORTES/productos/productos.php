@@ -18,9 +18,9 @@
 
 
 require_once '../../main.inc.php';
-require_once "../class/comunes.php";
-require_once "../class/filtros.php";
-require_once "../../evenxus/class/datos.php";
+require_once DOL_DOCUMENT_ROOT."/evenxusreports/class/comunes.php";
+require_once DOL_DOCUMENT_ROOT."/evenxusreports/class/filtros.php";
+require_once DOL_DOCUMENT_ROOT."/evenxus/class/datos.php";
 
 $CodigoReporte=8001051;
 $reporte = "productos";
@@ -42,11 +42,11 @@ llxHeader($c,"",$langs->trans(""));
 
 $Filtros = new filtros();
 
-print_fiche_titre($langs->trans("ListadoProductos"),"","../img/reporte.png",1);
+print_fiche_titre($langs->trans("ListadoProductos"),"","../img/$reporte.png",1);
 print SaltaLinea(1);
 // *****************************************************************************************************************************
 // Filtros
-print $Filtros->CodigoPostalDH();
+print $Filtros->ProductoDH();
 // *****************************************************************************************************************************
 print SaltaLinea(10);
 // *****************************************************************************************************************************
@@ -72,25 +72,22 @@ print "<script type='text/javascript'>
             // Preparo parametros comunes
             var params = new Array()
             var Idioma = '".DOL_DOCUMENT_ROOT."/evenxusreports/reports/".$langs->getDefaultLang()."';
-            params=ParametrosComunesReporte('$reporte.jasper',Modo,Idioma,Salida);
+            params=ParametrosComunesReporte(jasper,Modo,Idioma,Salida);
             
             // Añado parametros solo del propio reporte, como filtros y ordenes
             
             // Filtro parametro CP
-            var cp_desde = document.getElementById('cp_desde').value;
-            if (cp_desde == '')  { cp_desde='0'; }
-            var cp_hasta=document.getElementById('cp_hasta').value;
-            if (cp_hasta == '')  { cp_hasta='ZZZZZZZZZZZZ'; }
+            var producto_desde = document.getElementById('producto_desde').value;
+            if (producto_desde == '')  { producto_desde='0'; }
+            var producto_hasta = document.getElementById('producto_hasta').value;
+            if (producto_hasta == '')  { producto_hasta='ZZZZZZZZZZZZ'; }
             
             var i=params.length;
-            params[i++]  =  '-P';
-            params[i++]  =  'NOMBRE_EMPRESA=\"".MAIN_INFO_SOCIETE_NOM."\"';
-            params[i++]  =  'CP_DESDE='+cp_desde;
-            params[i++]  =  'CP_HASTA='+cp_hasta;
+            params[i++]  =  'PRODUCTO_DESDE='+producto_desde;
+            params[i++]  =  'PRODUCTO_HASTA='+producto_hasta;
             
-            // Lanzo reporte 
-            err = EvenxusLanzarReport(params,$actualizar_report_auto,'$dolibarr_main_url_root','$reporte');
-
+            // Lanzo reporte".
+            EvenxusLanzarReport($reporte,$actualizar_report_auto)."
             if (err!==null) { alert(err);   return err; }
     }
     </script>";

@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-$idReporte			=	8001001;
-$NombreReporte		=   "clientes";
+$idReporte			=	8001021;
+$NombreReporte		=   "proveedores";
 $ModuloReporte		=	"societe";
 
 $NombreJasper 		=   $NombreReporte.".jasper";
@@ -34,7 +34,7 @@ $ficheros=	 "/frontend/".$NombreFiltros.
 			",/reports/en_US/".$NombreIdiomaJasper.
 			",/reports/es_ES/".$NombreIdiomaJasper;
 // Creamos reporte
-$installOK=AddReporte($idReporte, "Clientes",$ModuloReporte,"ListadoClientes",$ficheros);
+$installOK=AddReporte($idReporte, "Proveedores",$ModuloReporte,"ListadoProveedores",$ficheros);
 
 if ($installOK)
 {
@@ -62,7 +62,7 @@ print $langs->trans("CreandoMenus")."<br>";
 // Padre (Menu de grupo) por eso el -1
 CrearMenu($idReporte,$NombreReporte,8001000,-1,"100001","index.php?module=Terceros","Terceros",""); 
 // Entrada menu
-CrearMenu($idReporte,$NombreReporte,8001001,8001000,"100002",$NombreFiltros,"Clientes",$NombreReporte);
+CrearMenu($idReporte,$NombreReporte,8001021,8001000,"100052",$NombreFiltros,"Proveedores",$NombreReporte);
 
 // Creamos entrada de reporte en base de datos para activacion y desinstalacion
 print $langs->trans("CreandoReporte")."<br>"; 
@@ -75,5 +75,5 @@ rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/logo.png",DO
 						 
 // Creamos enlace de seguridad
 print $langs->trans("CreandoPermisosReporte")."<br>"; 
-AddPermiso($idReporte,"PermitirUsarListadoClientes",$NombreReporte);
+AddPermiso($idReporte,"PermitirUsarListadoProveedores",$NombreReporte);
 }

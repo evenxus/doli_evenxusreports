@@ -29,7 +29,8 @@ $ficheros=	 "/frontend/".$NombreFiltros.
 			",/langs/es_ES/".$NombreIdioma.
 			",/langs/en_US/".$NombreIdioma.
 			",/reports/".$NombreJasper.
-			",/img/tiles/".$NombreReporte.".png".
+			",/img/".$NombreReporte.".png".			
+			",/img/tiles/".$NombreReporte.".png".			
 			",/reports/en_US/".$NombreIdiomaJasper.
 			",/reports/es_ES/".$NombreIdiomaJasper;
 // Creamos reporte
@@ -48,10 +49,9 @@ $langs->load($NombreReporte."@evenxusreports");
 // Cargamos reporte.jasper
 print $langs->trans("InstalandoFicheroReporte")."<br>"; 
 rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/".$NombreJasper,DOL_DOCUMENT_ROOT."/evenxusreports/reports/".$NombreJasper);
-// Creando carpetas de idiomas jasper
-rcopy(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/en_US/",DOL_DOCUMENT_ROOT."/evenxusreports/reports/en_US/");
-rcopy(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/es_ES/",DOL_DOCUMENT_ROOT."/evenxusreports/reports/es_ES/");
-
+// Creando idiomas jasper
+rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/en_US/$NombreReporte.properties",DOL_DOCUMENT_ROOT."/evenxusreports/reports/en_US/".$NombreReporte.".properties");
+rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/es_ES/$NombreReporte.properties",DOL_DOCUMENT_ROOT."/evenxusreports/reports/es_ES/".$NombreReporte.".properties");
 // Cargamos pantalla de filtros
 print $langs->trans("InstalandoFiltrosReporte")."<br>"; 
 rename("../upload/".$NombreReporte."/".$NombreFiltros,"../frontend/".$NombreFiltros);
@@ -59,7 +59,7 @@ rename("../upload/".$NombreReporte."/".$NombreFiltros,"../frontend/".$NombreFilt
 // Creamos entradas de Menu
 print $langs->trans("CreandoMenus")."<br>"; 
 // Padre (Menu de grupo) por eso el -1
-CrearMenu($idReporte,$NombreReporte,8001050,-1,"100001",$NombreFiltros,"Productos",""); 
+CrearMenu($idReporte,$NombreReporte,8001050,-1,"100001","index.php?module=Productos","Productos",""); 
 // Entrada menu
 CrearMenu($idReporte,$NombreReporte,8001051,8001050,"100002",$NombreFiltros,"Productos",$NombreReporte);
 
@@ -68,6 +68,9 @@ print $langs->trans("CreandoReporte")."<br>";
 
 // Copiamos tile
 rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/tile.png",DOL_DOCUMENT_ROOT."/evenxusreports/img/tiles/".$NombreReporte.".png"); 
+
+// Copiamos logo
+rename(DOL_DOCUMENT_ROOT."/evenxusreports/upload/".$NombreReporte."/logo.png",DOL_DOCUMENT_ROOT."/evenxusreports/img/".$NombreReporte.".png"); 
 						 
 // Creamos enlace de seguridad
 print $langs->trans("CreandoPermisosReporte")."<br>"; 

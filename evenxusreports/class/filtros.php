@@ -21,7 +21,7 @@
  */
 class filtros {
     
-    // Codigo postal
+    // Codigo postal DESDE-HASTA
     function CodigoPostalDH() {
         global $langs;
         $CodigoPostal = $langs->trans('CodigoPostal');
@@ -36,10 +36,30 @@ class filtros {
                     // Formatos
                     $(document).ready(function(){
                         $('.cp').attr('maxlength','5');
-                        $('.cp').attr('width', '20');
                     });
                     </script>";
         return $cadena;
     }
+    
+    // Articulos DESDE-HASTA
+    function ProductoDH() {
+        global $langs;
+        $Producto = $langs->trans('Productos');
+        $Desde = $langs->trans('Desde');
+        $Hasta = $langs->trans('Hasta');       
+        $cadena =   "<tr>
+                    <td><div class='titulofiltro'>$Producto : </div></td>
+                    <td>$Desde : <input type='text' class ='producto' id='producto_desde'></td>
+                    <td>$Hasta : <input type='text' class ='producto' id='producto_hasta'></td>    
+                    </tr>
+                    <script type='text/javascript'>
+                    // Formatos
+                    $(document).ready(function(){
+                        $('.producto').attr('maxlength','10');
+                    });
+                    </script>";
+        return $cadena;
+    }
+    
 }
 

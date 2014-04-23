@@ -3,6 +3,6 @@ CHARSET=UTF-8
 
 Terceros=Terceros
 Clientes=Clientes
-societe=Clientes
+societe=Terceros
 ListadoClientes=Listado de Clientes
 Permission8001001=Permitir el acceso al listado de clientes

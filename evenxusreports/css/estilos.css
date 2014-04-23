@@ -79,7 +79,7 @@ div.mainmenu.reportes {
 .titulofiltro {
     font-weight: bold;
     float: left;
-    padding-top: 4px;
+    padding-top: 2px;
     margin-right: 10px;
 }
 .cp {
@@ -87,4 +87,8 @@ div.mainmenu.reportes {
     margin-left: 5px;
     margin-right: 5px;
 }
-
+.producto {
+    width: 80px;
+    margin-left: 5px;
+    margin-right: 5px;
+}

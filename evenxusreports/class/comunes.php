@@ -189,3 +189,21 @@ function rcopy($src, $dst) {
     else if (file_exists($src))
         copy($src, $dst);
 }
+
+/**
+ * 
+ * Lanza reporte Jasper
+ * 
+ * @global type $conf
+ * @global type $dolibarr_main_url_root
+ * @param type $reporte                     Nombre del reporte
+ * @param type $actualizar_report_auto      1 si actualiza., 0 no actualiza
+ * @return string                           Cadena para pintar el js
+ */
+function EvenxusLanzarReport($reporte,$actualizar_report_auto) {
+    global $conf;
+    global $dolibarr_main_url_root;
+    $LanzarReporte = "\n params[i++]  =  'NOMBRE_EMPRESA=".$conf->global->MAIN_INFO_SOCIETE_NOM."'";
+    $LanzarReporte = $LanzarReporte."\n err=EvenxusLanzarReport(params,$actualizar_report_auto,'".$dolibarr_main_url_root."','$reporte');";
+    return $LanzarReporte;
+}
