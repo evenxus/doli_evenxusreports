@@ -27,8 +27,6 @@ $actualizar_report_auto=1;
 $c =    '<link rel=stylesheet href="../css/estilos.css" type="text/css">'.
         '<script src="../js/comunes.js" type="text/javascript"></script>';
 
-$langs->load("evenxusreports@evenxus");
-
 llxHeader($c,"",$langs->trans("")); 
 
 print '<center>';

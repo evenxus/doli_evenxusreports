@@ -18,7 +18,7 @@
 
 
 require_once '../../main.inc.php';
-require_once (DOL_DOCUMENT_ROOT . '/evenxusreports/class/comunes.php');
+dol_include_once('/evenxusreports/class/comunes.php');
 
 
 $actualizar_report_auto=1;
@@ -26,8 +26,6 @@ $actualizar_report_auto=1;
 
 $c =    '<link rel=stylesheet href="../css/estilos.css" type="text/css">'.
         '<script src="../js/comunes.js" type="text/javascript"></script>';
-
-$langs->load("evenxusreports@evenxus");
 
 llxHeader($c,"",$langs->trans("")); 
 print_fiche_titre($langs->trans("ConfigurarReportes"),"","../img/configurar.png",1);
@@ -38,6 +36,8 @@ print '<br>';
 print $langs->trans("ParrafoConfig1");
 print '<br><br>';
 print '<input class="botonconfig" id="listareportes" type="button" name="listareportes"  value="'.$langs->trans("ListaReportes").'" onclick="ListaReportes()">';
+print '<div id="buttongapconfig">&nbsp;</div>';
+print '<input class="botonconfig" id="adquirir" type="button" name="adquirir"  value="'.$langs->trans("CargarReporte").'" onclick="CargarReporte()">';
 print '<div id="buttongapconfig">&nbsp;</div>';
 print '<input class="botonconfig" id="descargarplugin" type="button" name="descargarplugin"  value="'.$langs->trans("DescargarPlugin").'" onclick="DescargarPlugin(\''.$dolibarr_main_url_root.'/evenxusreports/xpi/evenxusreports@evenxus.xpi\')">';
 print '<div id="buttongapconfig">&nbsp;</div>';
@@ -50,11 +50,18 @@ print '</center>';
 print '<br><br>'.PiePagina();                 
 
 print "<script type='text/javascript'>
+    
+    function CargarReporte()  {
+        location.href='$dolibarr_main_url_root/evenxusreports/frontend/cargarreporte.php';
+    }        
     function ListaReportes()  {
         location.href='$dolibarr_main_url_root/evenxusreports/frontend/listareportes.php';
     }    
     function AdquirirReporte()  {
-        location.href='$dolibarr_main_url_root/evenxusreports/frontend/adquirirreporte.php';
+        window.open(
+            'http://www.evenxus.com/?page_id=178',
+            '_blank' 
+        );    
     }
     function AcercaDe()  {
         location.href='$dolibarr_main_url_root/evenxusreports/frontend/evenxusreports.php';

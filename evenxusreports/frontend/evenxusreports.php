@@ -18,16 +18,15 @@
 
 
 require_once '../../main.inc.php';
+dol_include_once('/evenxusreports/class/comunes.php');
 
-// Seguridad
-//if ($state =='create'           && !$user->rights->evenxusreports->peliculas->create) accessforbidden(); 
 
 $actualizar_report_auto=1;
 
 $c =    '<link rel=stylesheet href="../css/estilos.css" type="text/css">'.
         '<script src="../js/comunes.js" type="text/javascript"></script>';
 
-$langs->load("evenxusreports@evenxus");
+
 
 llxHeader($c,"",$langs->trans("")); 
 

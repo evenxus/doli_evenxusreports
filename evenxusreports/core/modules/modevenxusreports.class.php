@@ -19,9 +19,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
-require_once DOL_DOCUMENT_ROOT . '/evenxusreports/class/instalarreportes.php';
-require_once DOL_DOCUMENT_ROOT . '/evenxusreports/class/comunes.php';
+dol_include_once('/core/modules/DolibarrModules.class.php');
+dol_include_once('/evenxusreports/class/instalarreportes.php');
+dol_include_once('/evenxusreports/class/comunes.php');
 
 /**
  *  Descripcion y activacion de la clase del modulo extendiendo DolibarrModules
@@ -165,8 +165,6 @@ class modEvenxusReports extends DolibarrModules {
           $r++;
          */
 
-        $langs->load("evenxusreports@evenxusreports");
-
         // Permisos
         $this->rights = array();  // Array de permisos del modulo
         $r = 0;
@@ -268,7 +266,7 @@ class modEvenxusReports extends DolibarrModules {
      *      @return     int         1 if OK, 0 if KO
      */
     function init($options = '') {
-        require_once DOL_DOCUMENT_ROOT . '/evenxus/class/datos.php';
+        dol_include_once('/evenxus/class/datos.php');
         $de = new DatosEvenxus();
 
         $sql = array();

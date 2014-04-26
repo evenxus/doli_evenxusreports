@@ -68,7 +68,7 @@ CampoActivo=Activo
 CampDetalle=Detalle
 DESINSTALARLISTADO=Desinstalar
 DESINSTALARLISTADOTITULO=Desinstalar listado
-EXPLICADESINSTALARLISTADO=Al desintalar un listado se borrar del sistema.
+EXPLICADESINSTALARLISTADO=Al desintalar un listado se borrara del sistema.
 
 #Pantallas varias
 ReporteOFF=REPORTE DESACTIVADO
@@ -92,4 +92,5 @@ ExportarCSV=Exportar a CSV file
 Desde=Desde
 Hasta=Hasta
 CodigoPostal=Codigo Postal
-
+Productos=Productos
+Proveedores=Proveedores

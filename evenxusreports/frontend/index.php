@@ -16,7 +16,7 @@
  */  
 
 require_once('../../main.inc.php');		
-require_once DOL_DOCUMENT_ROOT . '/evenxusreports/class/comunes.php';
+dol_include_once('/evenxusreports/class/comunes.php');
 
 
 $module = GETPOST('module', 'alpha');

@@ -81,4 +81,5 @@ ExportarCSV=Export to CSV file
 Desde=From
 Hasta=To
 CodigoPostal=ZIP code
-
+Productos=Products
+Proveedores=Suppliers

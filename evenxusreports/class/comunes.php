@@ -114,7 +114,7 @@ function CarpetaIdiomaReporte($NombreReporte) {
 }
 
 function CargarIdiomas() {
-    global $db;
+    global $db,$langs;
     $idiomas = array();
     $idiomas[] = "evenxusreports@evenxusreports";
     $sql = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_idiomas";
@@ -122,10 +122,13 @@ function CargarIdiomas() {
 
     if ($res > 0) {
         $fila = $res->fetch_array();
+        $i=1;
         while ($fila) {
             $idioma = $fila[idioma];
             $nombreidioma = explode(".", $idioma);
             $idiomas[] = $nombreidioma[0] . "@evenxusreports";
+            $langs->Load($idiomas[$i]);
+            $i++;
             $fila = $res->fetch_array();
         }
     }

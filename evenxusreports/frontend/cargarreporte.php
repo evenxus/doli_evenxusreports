@@ -23,18 +23,15 @@
 
 require_once '../../main.inc.php';
 
-require_once '../../evenxus/class/barraprogreso.php';
-require_once '../../evenxus/class/datos.php';
-
-require_once '../class/comunes.php';
-require_once '../class/instalarreportes.php';
+dol_include_once('evenxus/class/barraprogreso.php');
+dol_include_once('evenxus/class/datos.php');
+dol_include_once('evenxusreports/class/comunes.php');
+dol_include_once('evenxusreports/class/instalarreportes.php');
 
 
 global $db;
 
 $de = new DatosEvenxus();
-
-$langs->load("evenxusreports@evenxusreports");
 
 if (!$user->rights->evenxusreports->cargarreporte->use) { accessforbidden(); }
 

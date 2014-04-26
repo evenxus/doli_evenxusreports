@@ -21,11 +21,11 @@
  * PAGINA QUE CONTIENE LA LISTA DE TODOS LAS RECOGIDAS CON SU ESTADO
  */
 require_once ("../../main.inc.php");                 // Acceso al main de Doli, obligatorio
-require_once (DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php'); // Para leer los archivos de una carpeta
-require_once (DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php');
-require_once (DOL_DOCUMENT_ROOT . '/evenxus/class/datos.php');     // Ayuda en acceso a datos Doli
-require_once (DOL_DOCUMENT_ROOT . '/evenxusreports/class/instalarreportes.php');
-require_once (DOL_DOCUMENT_ROOT . '/evenxusreports/class/comunes.php');
+dol_include_once('/core/lib/files.lib.php'); // Para leer los archivos de una carpeta
+dol_include_once('/core/lib/functions2.lib.php');
+dol_include_once('/evenxus/class/datos.php');     // Ayuda en acceso a datos Doli
+dol_include_once('/evenxusreports/class/instalarreportes.php');
+dol_include_once('/evenxusreports/class/comunes.php');
 
 $form = new Form($db);                  // Usado para gestioanr forms(p.e. lanzar los paneles de confirmacion en ajax)
 $Datos = new DatosEvenxus();            // Ayuda en accesos a datos

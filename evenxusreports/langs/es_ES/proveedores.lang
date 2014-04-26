@@ -1,0 +1,8 @@
+# Dolibarr language file - es_ES
+CHARSET=UTF-8
+
+Terceros=Terceros
+Proveedores=Proveedores
+societe=Terceros
+ListadoProveedores=Listado de Proveedores
+Permission8001021=Permitir el acceso al listado de proveedores

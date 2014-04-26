@@ -33,7 +33,7 @@
 function CrearMenu($CodigoReporte, $NombreReporte, $CodigoMenu, $CodigoMenuPadre, $position, $NombrePHP, $Titulo, $NombrePermiso) {
     $InsertId = 0;
     global $db;
-    require_once DOL_DOCUMENT_ROOT . '/evenxus/class/datos.php';
+    dol_include_once('/evenxus/class/datos.php');
     $de = new DatosEvenxus();
 // Asginamos fk_menu o id de menu padre
     if ($CodigoMenuPadre == -1) {  // Menu superior
@@ -222,7 +222,7 @@ function RecrearPermisosReportes() {
  */
 function BorrarReporte($codigo) {
     global $db;
-    require_once DOL_DOCUMENT_ROOT . '/evenxus/class/datos.php';
+    dol_include_once('/evenxus/class/datos.php');
     $de = new DatosEvenxus();
 
 // Borramos menu
