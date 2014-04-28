@@ -29,6 +29,7 @@ foreach ($idiomas as &$idioma) {
 
 $c="<link rel=stylesheet href='../css/estilos.css' type='text/css'>
     <link rel='stylesheet' href='../css/portfolio.css' type='text/css' media='screen'>
+    <script src='../js/evenxusreports.js' type='text/javascript'></script>
     <script src='../js/comunes.js' type='text/javascript'></script>
     <script src='../js/filterable.pack.js' type='text/javascript' charset='utf-8'></script>";
     
@@ -52,7 +53,7 @@ print "</u1>
 </div>
 ";
 print "<center>";
-print '<input class="botonconfig" id="descargarplugin" type="button" name="descargarplugin"  value="'.$langs->trans("DescargarPlugin").'" onclick="DescargarPlugin(\''.$dolibarr_main_url_root.'/evenxusreports/xpi/evenxusreports@evenxus.xpi\')">';
+print '<input class="botonconfig" id="descargarplugin" type="button" name="descargarplugin"  value="'.$langs->trans("DescargarPlugin").'" onclick="DescargarPlugin()">';
 print "<div id='buttongapconfig'>&nbsp;</div>";
 print "<input class='botonconfig' id='acercade' type='button' name='acercade'  value='".$langs->trans('AcercaDe')."' onclick='AcercaDe()'>";
 print "</center>";
@@ -66,12 +67,6 @@ print "<script type='text/javascript'>
     $('".$module."')[0].click();
 });
 </script>";
-print "<script type='text/javascript'>
-
-    function AcercaDe()  {
-        location.href='$dolibarr_main_url_root/evenxusreports/frontend/evenxusreports.php';
-    }
-    </script>";
 
 
 /*

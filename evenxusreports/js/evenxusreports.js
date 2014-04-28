@@ -110,10 +110,10 @@ function EvenxusLanzarReport(params,actualizar,rutadescarga,reporte)
             var properties=reporte+'.properties';
             var rutadescargaidiomas = rutadescarga + '/evenxusreports/reports';
             // Español-España
-            var err = EvenxusActualizarReportIdioma(rutadescargaidiomas+'/es_ES/',properties,'es_ES\\');            
+            var err = EvenxusActualizarReportIdioma(rutadescargaidiomas+'/es_ES/',properties,'es_ES/');            
                 if (err!==null) { alert(err);   return err; }
             // Ingles
-            var err = EvenxusActualizarReportIdioma(rutadescargaidiomas+'/en/',properties,'en\\');            
+            var err = EvenxusActualizarReportIdioma(rutadescargaidiomas+'/en_US/',properties,'en_US/');            
                 if (err!==null) { alert(err);   return err; }            
       }
       try {
@@ -214,4 +214,9 @@ function ImprimirComoReporte() {
     ProcesarReporte('dialogoimpresora',0);
 }
 
-
+// URL Doli base
+function URL_DOLI_BASE() {
+     var URLCOMPLETA=document.URL;
+     var TROZOS=URLCOMPLETA.split('/evenxusreports/');
+     return TROZOS[0];
+}

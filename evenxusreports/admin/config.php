@@ -25,6 +25,7 @@ $actualizar_report_auto=1;
 
 
 $c =    '<link rel=stylesheet href="../css/estilos.css" type="text/css">'.
+        '<script src="../js/evenxusreports.js" type="text/javascript"></script>'.        
         '<script src="../js/comunes.js" type="text/javascript"></script>';
 
 llxHeader($c,"",$langs->trans("")); 
@@ -39,7 +40,7 @@ print '<input class="botonconfig" id="listareportes" type="button" name="listare
 print '<div id="buttongapconfig">&nbsp;</div>';
 print '<input class="botonconfig" id="adquirir" type="button" name="adquirir"  value="'.$langs->trans("CargarReporte").'" onclick="CargarReporte()">';
 print '<div id="buttongapconfig">&nbsp;</div>';
-print '<input class="botonconfig" id="descargarplugin" type="button" name="descargarplugin"  value="'.$langs->trans("DescargarPlugin").'" onclick="DescargarPlugin(\''.$dolibarr_main_url_root.'/evenxusreports/xpi/evenxusreports@evenxus.xpi\')">';
+print '<input class="botonconfig" id="descargarplugin" type="button" name="descargarplugin"  value="'.$langs->trans("DescargarPlugin").'" onclick="DescargarPlugin()">';
 print '<div id="buttongapconfig">&nbsp;</div>';
 print '<input class="botonconfig" id="adquirir" type="button" name="adquirir"  value="'.$langs->trans("AdquirirReporte").'" onclick="AdquirirReporte()">';
 print '<div id="buttongapconfig">&nbsp;</div>';
@@ -52,19 +53,16 @@ print '<br><br>'.PiePagina();
 print "<script type='text/javascript'>
     
     function CargarReporte()  {
-        location.href='$dolibarr_main_url_root/evenxusreports/frontend/cargarreporte.php';
+        location.href=URL_DOLI_BASE()+'/evenxusreports/frontend/cargarreporte.php';
     }        
     function ListaReportes()  {
-        location.href='$dolibarr_main_url_root/evenxusreports/frontend/listareportes.php';
+        location.href=URL_DOLI_BASE()+'/evenxusreports/frontend/listareportes.php';
     }    
     function AdquirirReporte()  {
         window.open(
             'http://www.evenxus.com/?page_id=178',
             '_blank' 
         );    
-    }
-    function AcercaDe()  {
-        location.href='$dolibarr_main_url_root/evenxusreports/frontend/evenxusreports.php';
     }
     </script>";
 llxFooter();

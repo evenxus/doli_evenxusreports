@@ -71,8 +71,7 @@ print "<script type='text/javascript'>
             
             // Preparo parametros comunes
             var params = new Array()
-            var Idioma = '".DOL_DOCUMENT_ROOT."/evenxusreports/reports/".$langs->getDefaultLang()."';
-            params=ParametrosComunesReporte(jasper,Modo,Idioma,Salida);
+            params=ParametrosComunesReporte(jasper,Modo,'".$langs->getDefaultLang()."',Salida);
             
             // Añado parametros solo del propio reporte, como filtros y ordenes
             
