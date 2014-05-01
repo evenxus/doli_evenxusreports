@@ -22,17 +22,6 @@ AdquirirReporte=Adquirir reporte
 AcercaDe=Acerca de...
 ParrafoConfig1=Evenxus Reports es codigo fuente libre, si quieres obtener nuevos reportes consultanos
 
-# Adquirir reporte
-AsksForm=Adquirir nuevo reporte
-NewReport1=Evenxus le ofrece la posibilidad de diseñar cualquier tipo de reporte, ya sea para un modulo estandard o para uno a medida
-NewReport2=Los reportes creados de este modo son totalmente Open Source y su coste depende del tipo de reporte. Rellene este formulario y le haremos un estudio de coste
-SampleFilter=Filtros que se usaran para el reporte.
-SampleDesc=Descripcción detallada del repote. Sobre que se aplica, que se quiere obtener, particularidades...
-NombreCliente=Nombre cliente
-SolveIt=Rellene los datos de contacto (Inicio->Configuración->Empresa/Institución y/o complete su ficha de usuario)<br>Rellene los campos filtro y descripción 
-Send=Enviar
-Anular=Cancelar
-
 # Instalar listados
 ExplicaCargaReportes=Aqui puedes cargar un nuevo reporte al sistema de Evenxus Reports, solo tienes que escoger el fichero ZIP del reporte y pulsar en Enviar
 Enviar=Cargar
@@ -53,7 +42,7 @@ ErrorZIP=Error al descomprimir el instalador. Es posible que no sea un ZIP o est
 
 # Pantalla Evenxus
 
-Parrafo1=Evenxus Reports es un modulo de Dolibarr para gestión avanzada de informes y graficas desde el navegador Mozilla Firefox.<br><br>Utiliza como "motor" de reportes Jasper Reports lo que permite un diseño avanzado de reportes con la herramiento Jasper Studio. <br><br>Jasper Reports en un motor escrito totalmente en Java y se conecta a Dolibarr mediante un plugin de Mozilla Firefox.<br><br>
+Parrafo1=Evenxus Reports es un modulo de Dolibarr para gestión avanzada de informes y graficas desde el navegador Mozilla Firefox.<br><br>Utiliza como "motor" de reportes Jasper Reports lo que permite un diseño avanzado de reportes con la herramienta Jasper Studio. <br><br>Jasper Reports en un motor escrito totalmente en Java y se conecta a Dolibarr mediante un plugin de Mozilla Firefox.<br><br>
 Parrafo2=El plugin contiene todo lo necesario para usar el modulo, y el unico requerimiento para funcionar es que JAVA debe estar instalado en la maquina local.
 Parrafo3=Mas información y soporte :
 Parrafo4=El modulo y el plugin son open source y pueden ser descargadas desde nuestro repositorio en GitHub :

@@ -26,9 +26,13 @@ $CodigoReporte=8001021;
 $reporte = "proveedores";
 $actualizar_report_auto=1;
 
+$langs->load($reporte."@evenxusreports");
+
+
 // Seguridad
-if (!$user->rights->evenxusreports->reports->clientes) ReporteProhibido(); 
+if (!$user->rights->evenxusreports->reports->proveedores) ReporteProhibido(); 
 if (ReporteActivo($CodigoReporte)==false) ReporteDesactivado(); 
+
 
 
 $c =    '<link rel=stylesheet href="../css/estilos.css" type="text/css">'.
@@ -43,6 +47,7 @@ print_fiche_titre($langs->trans("ListadoProveedores"),"","../img/$reporte.png",1
 print SaltaLinea(1);
 // *****************************************************************************************************************************
 // Filtros
+print $Filtros->ProveedoresDH("rowid");
 print $Filtros->CodigoPostalDH();
 // *****************************************************************************************************************************
 print SaltaLinea(10);
@@ -75,13 +80,41 @@ print "<script type='text/javascript'>
             if (cp_desde == '')  { cp_desde='0'; }
             var cp_hasta = document.getElementById('cp_hasta').value;
             if (cp_hasta == '')  { cp_hasta='ZZZZZZZZZZZZ'; }
+            var proveedor_desde = document.getElementById('proveedor_desde').value;
+            if (proveedor_desde == -1)  { proveedor_desde=0; }
+            var proveedor_hasta = document.getElementById('proveedor_hasta').value;
+            if (proveedor_hasta == -1)  { proveedor_hasta=999999999999; }
             
             var i=params.length;
             params[i++]  =  'CP_DESDE='+cp_desde;
             params[i++]  =  'CP_HASTA='+cp_hasta;
+            params[i++]  =  'PROVEEDOR_DESDE='+proveedor_desde;
+            params[i++]  =  'PROVEEDOR_HASTA='+proveedor_hasta;
             
+            params[i++]  = ".FILTRO_DETALLE()."
             // Lanzo reporte".
             EvenxusLanzarReport($reporte,$actualizar_report_auto)."
             if (err!==null) { alert(err);   return err; }
     }
     </script>";
+
+
+/**
+ * Texto de filtro al pie del reporte
+ * 
+ * @global type $langs
+ * @return string
+ */
+function FILTRO_DETALLE() {
+    global $langs;    
+    $FD="'FILTRO=";
+    $FD=$FD.$langs->trans("Desde"). " ".$langs->trans("Proveedor"). " : ' + proveedor_desde + '";
+    $FD=$FD." - ";
+    $FD=$FD.$langs->trans("Hasta"). " ".$langs->trans("Proveedor"). " : ' + proveedor_hasta + '";
+    $FD=$FD."\\n";
+    $FD=$FD.$langs->trans("Desde"). " ".$langs->trans("CodigoPostal"). " : ' + cp_desde + '";
+    $FD=$FD." - ";
+    $FD=$FD.$langs->trans("Hasta"). " ".$langs->trans("CodigoPostal"). " : ' + cp_hasta + '";
+    $FD=$FD."'";
+    return $FD;    
+}

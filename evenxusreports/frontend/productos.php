@@ -26,6 +26,8 @@ $CodigoReporte=8001051;
 $reporte = "productos";
 $actualizar_report_auto=1;
 
+$langs->load($reporte."@evenxusreports");
+
 // Seguridad
 if (!$user->rights->evenxusreports->reports->productos) accessforbidden(); 
 if (ReporteActivo($CodigoReporte)==0) accessforbidden(); 

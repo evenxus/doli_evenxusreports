@@ -26,6 +26,8 @@ $CodigoReporte=8001001;
 $reporte = "clientes";
 $actualizar_report_auto=1;
 
+$langs->load($reporte."@evenxusreports");
+
 // Seguridad
 if (!$user->rights->evenxusreports->reports->clientes) ReporteProhibido(); 
 if (ReporteActivo($CodigoReporte)==false) ReporteDesactivado(); 
@@ -43,6 +45,7 @@ print_fiche_titre($langs->trans("ListadoClientes"),"","../img/$reporte.png",1);
 print SaltaLinea(1);
 // *****************************************************************************************************************************
 // Filtros
+print $Filtros->ClientesDH("rowid");
 print $Filtros->CodigoPostalDH();
 // *****************************************************************************************************************************
 print SaltaLinea(10);
@@ -75,13 +78,40 @@ print "<script type='text/javascript'>
             if (cp_desde == '')  { cp_desde='0'; }
             var cp_hasta = document.getElementById('cp_hasta').value;
             if (cp_hasta == '')  { cp_hasta='ZZZZZZZZZZZZ'; }
+            var cliente_desde = document.getElementById('cliente_desde').value;
+            if (cliente_desde == -1)  { cliente_desde=0; }
+            var cliente_hasta = document.getElementById('cliente_hasta').value;
+            if (cliente_hasta == -1)  { cliente_hasta=999999999999; }
             
             var i=params.length;
             params[i++]  =  'CP_DESDE='+cp_desde;
             params[i++]  =  'CP_HASTA='+cp_hasta;
+            params[i++]  =  'CLIENTE_DESDE='+cliente_desde;
+            params[i++]  =  'CLIENTE_HASTA='+cliente_hasta;
             
+            params[i++]  = ".FILTRO_DETALLE()."
             // Lanzo reporte".
             EvenxusLanzarReport($reporte,$actualizar_report_auto)."
             if (err!==null) { alert(err);   return err; }
     }
     </script>";
+
+/**
+ * Texto de filtro al pie del reporte
+ * 
+ * @global type $langs
+ * @return string
+ */
+function FILTRO_DETALLE() {
+    global $langs;    
+    $FD="'FILTRO=";    
+    $FD=$FD.$langs->trans("Desde"). " ".$langs->trans("Cliente"). " : ' + cliente_desde + '";
+    $FD=$FD." - ";
+    $FD=$FD.$langs->trans("Hasta"). " ".$langs->trans("Cliente"). " : ' + cliente_hasta + '";
+    $FD=$FD."\\n";
+    $FD=$FD.$langs->trans("Desde"). " ".$langs->trans("CodigoPostal"). " : ' + cp_desde + '";
+    $FD=$FD." - ";
+    $FD=$FD.$langs->trans("Hasta"). " ".$langs->trans("CodigoPostal"). " : ' + cp_hasta + '";
+    $FD=$FD."'";
+    return $FD;    
+}

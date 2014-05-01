@@ -39,7 +39,6 @@ foreach ($idiomas as &$idioma) {
     $langs->load($idioma);
 }
 
-
 /*
  * Listado
  */
