@@ -59,17 +59,3 @@ $(function() {
         icons: { primary: "iconplugin"   }	
     });     
 });
-/**
- * 
- * Descarga el plugin
- * 
- * @param {type} rutadescarga
- * @returns {undefined}
- * 
- */
-function DescargarPlugin() {
-    location.href=URL_DOLI_BASE()+'/evenxusreports/xpi/evenxusreports@evenxus.xpi';
-}
-function AcercaDe()  {
-    location.href=URL_DOLI_BASE()+'/evenxusreports/frontend/evenxusreports.php';
-}

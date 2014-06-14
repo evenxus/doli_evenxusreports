@@ -26,8 +26,6 @@ $CodigoReporte=8001001;
 $reporte = "clientes";
 $actualizar_report_auto=1;
 
-$langs->load($reporte."@evenxusreports");
-
 // Seguridad
 if (!$user->rights->evenxusreports->reports->clientes) ReporteProhibido(); 
 if (ReporteActivo($CodigoReporte)==false) ReporteDesactivado(); 

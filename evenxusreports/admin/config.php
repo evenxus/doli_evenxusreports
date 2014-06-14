@@ -53,17 +53,21 @@ print '<br><br>'.PiePagina();
 print "<script type='text/javascript'>
     
     function CargarReporte()  {
-        location.href=URL_DOLI_BASE()+'/evenxusreports/frontend/cargarreporte.php';
+        location.href=URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/frontend/cargarreporte.php';
     }        
     function ListaReportes()  {
-        location.href=URL_DOLI_BASE()+'/evenxusreports/frontend/listareportes.php';
+        location.href=URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/frontend/listareportes.php';
     }    
     function AdquirirReporte()  {
-        window.open(
-            'http://www.evenxus.com/?page_id=178',
-            '_blank' 
-        );    
+        window.open('http://www.evenxus.com/?page_id=178','_blank');    
     }
+
+    function DescargarPlugin() {
+        window.open(URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/xpi/evenxusreports@evenxus.xpi','_self');    
+    }
+    function AcercaDe()  {
+        window.open(URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/frontend/evenxusreports.php','_self');    
+    }    
     </script>";
 llxFooter();
 

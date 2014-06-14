@@ -215,8 +215,8 @@ function ImprimirComoReporte() {
 }
 
 // URL Doli base
-function URL_DOLI_BASE() {
+function URL_DOLI_BASE(BASE) {
      var URLCOMPLETA=document.URL;
-     var TROZOS=URLCOMPLETA.split('/evenxusreports/');
-     return TROZOS[0];
+     var TROZOS=URLCOMPLETA.split('/'+BASE+'/');
+     return TROZOS[0]+'/'+BASE;
 }

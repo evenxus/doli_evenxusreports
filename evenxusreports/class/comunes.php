@@ -208,6 +208,7 @@ function EvenxusLanzarReport($reporte,$actualizar_report_auto) {
     global $dolibarr_main_url_root;
     //$LanzarReporte = "\n params[i++]  =  '\"NOMBRE_EMPRESA=".$conf->global->MAIN_INFO_SOCIETE_NOM."\"';";
     $LanzarReporte = "\n params[i++]  =  'NOMBRE_EMPRESA=".$conf->global->MAIN_INFO_SOCIETE_NOM."';";
-    $LanzarReporte = $LanzarReporte."\n err=EvenxusLanzarReport(params,$actualizar_report_auto,URL_DOLI_BASE(),'$reporte');";
+    $LanzarReporte = $LanzarReporte."\n err=EvenxusLanzarReport(params,$actualizar_report_auto,URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."'),'$reporte');";
     return $LanzarReporte;
 }
+
