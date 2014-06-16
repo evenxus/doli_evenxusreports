@@ -266,33 +266,32 @@ class modEvenxusReports extends DolibarrModules {
      *      @return     int         1 if OK, 0 if KO
      */
     function init($options = '') {
-//        dol_include_once('/evenxus/class/datos.php');
-//        $de = new DatosEvenxus();
-//
+        dol_include_once('/evenxus/class/datos.php');
+
         $sql = array();
         $result = $this->load_tables();
         $this->_init($sql, $options);
-//
-//        // Añade menus automaticos del modulo segun reportes instalados
-//        global $db;
-//        $sqlModulo = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_menu_reports";
-//        $result = $db->query($sqlModulo);
-//        if ($result > 0) {
-//            $fila = $result->fetch_array();
-//            while ($fila) {
-//                $codigoreporte = $fila[codigoreporte];
-//                $nombrereporte = $fila[nombrereporte];
-//                $codigomenu = $fila[codigomenu];
-//                $codigomenupadre = $fila[codigomenupadre];
-//                $orden = $fila[orden];
-//                $filtros = $fila[filtros];
-//                $titulo = $fila[titulo];
-//                CrearMenu($codigoreporte, $nombrereporte, $codigomenu, $codigomenupadre, $orden, $filtros, $titulo, 0);
-//                $fila = $result->fetch_array();
-//            }
-//        }
-//        // Recrea permisos de reportes a nivel de usuario
-//        RecrearPermisosReportes();
+
+        // Añade menus automaticos del modulo segun reportes instalados
+        global $db;
+        $sqlModulo = "SELECT * FROM " . MAIN_DB_PREFIX . "evr_menu_reports";
+        $result = $db->query($sqlModulo);
+        if ($result > 0) {
+            $fila = $result->fetch_array();
+            while ($fila) {
+                $codigoreporte = $fila[codigoreporte];
+                $nombrereporte = $fila[nombrereporte];
+                $codigomenu = $fila[codigomenu];
+                $codigomenupadre = $fila[codigomenupadre];
+                $orden = $fila[orden];
+                $filtros = $fila[filtros];
+                $titulo = $fila[titulo];
+                CrearMenu($codigoreporte, $nombrereporte, $codigomenu, $codigomenupadre, $orden, $filtros, $titulo, 0);
+                $fila = $result->fetch_array();
+            }
+        }
+        // Recrea permisos de reportes a nivel de usuario
+        RecrearPermisosReportes();
         return 1;
     }
 
@@ -322,7 +321,7 @@ class modEvenxusReports extends DolibarrModules {
      * 	@return		int	<= 0 if KO, >0 if OK
      */
     function load_tables() {
-        return $this->_load_tables('/hexagono/sql/');
+        return $this->_load_tables('/evenxusreports/sql/');
     }
 
 }

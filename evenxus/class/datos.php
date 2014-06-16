@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once (DOL_DOCUMENT_ROOT ."/main.inc.php");        // Acceso al main de Doli, obligatorio
+//require_once ('../../main.inc.php');        // Acceso al main de Doli, obligatorio
 
 /**
  * FUNCIONES COMUNES DE ACCESO A DATOS, UTILIZA COMO  BASE $db DE DOLIBARR
@@ -137,6 +137,5 @@ class DatosEvenxus {
         }
         return $valorcampo;        
     }
-    
 }
 

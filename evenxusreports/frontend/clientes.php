@@ -26,8 +26,6 @@ $CodigoReporte=8001001;
 $reporte = "clientes";
 $actualizar_report_auto=1;
 
-$langs->load($reporte."@evenxusreports");
-
 // Seguridad
 if (!$user->rights->evenxusreports->reports->clientes) ReporteProhibido(); 
 if (ReporteActivo($CodigoReporte)==false) ReporteDesactivado(); 
@@ -89,7 +87,7 @@ print "<script type='text/javascript'>
             params[i++]  =  'CLIENTE_DESDE='+cliente_desde;
             params[i++]  =  'CLIENTE_HASTA='+cliente_hasta;
             
-            params[i++]  = ".FILTRO_DETALLE()."
+            params[i++] = 'FILTRO=".FILTRO_DETALLE().";
             // Lanzo reporte".
             EvenxusLanzarReport($reporte,$actualizar_report_auto)."
             if (err!==null) { alert(err);   return err; }
@@ -104,8 +102,7 @@ print "<script type='text/javascript'>
  */
 function FILTRO_DETALLE() {
     global $langs;    
-    $FD="'FILTRO=";    
-    $FD=$FD.$langs->trans("Desde"). " ".$langs->trans("Cliente"). " : ' + cliente_desde + '";
+    $FD=$langs->trans("Desde"). " ".$langs->trans("Cliente"). " : ' + cliente_desde + '";
     $FD=$FD." - ";
     $FD=$FD.$langs->trans("Hasta"). " ".$langs->trans("Cliente"). " : ' + cliente_hasta + '";
     $FD=$FD."\\n";

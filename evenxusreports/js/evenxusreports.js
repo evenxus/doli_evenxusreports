@@ -150,7 +150,7 @@ function EvenxusActualizarReport()
         document.documentElement.appendChild(element);
         element.setAttribute('errorMessage', 'Unexpected error');
         var ev = document.createEvent('Events');
-	ev.initEvent('Evenxus_Actualizar_Reportes', true, false); // Lanzo evento de impresion
+	ev.initEvent('Evenxus_Actualizar_Reportes', true, false); // Lanzo evento  
         element.dispatchEvent(ev);
         // Error de instalacion del complemento
         if (!element.hasAttribute('evenxus_load_ok')) {
@@ -164,7 +164,7 @@ function EvenxusActualizarReport()
       return element.getAttribute('errorMessage');
 }
 /**
- * Funcion EvenxusActualizarReport
+ * Funcion EvenxusActualizarReportIdioma
  */
 function EvenxusActualizarReportIdioma()
 {
@@ -176,7 +176,33 @@ function EvenxusActualizarReportIdioma()
         document.documentElement.appendChild(element);
         element.setAttribute('errorMessage', 'Unexpected error');
         var ev = document.createEvent('Events');
-	ev.initEvent('Evenxus_Actualizar_Reportes_Idiomas', true, false); // Lanzo evento de impresion
+	ev.initEvent('Evenxus_Actualizar_Reportes_Idiomas', true, false); // Lanzo evento  
+        element.dispatchEvent(ev);
+        // Error de instalacion del complemento
+        if (!element.hasAttribute('evenxus_load_ok')) {
+            return 'El plugin Evenxus Reports(Firefox) no esta instalado';
+        }
+        document.documentElement.removeChild(element);
+      } catch(e) {
+        setTimeout(function() { throw e; }, 0);
+        return 'Error no controlado';
+      }
+      return element.getAttribute('errorMessage');
+}
+/**
+ * Funcion EvenxusActualizarReportRecurso
+ */
+function EvenxusActualizarReportRecurso()
+{
+      try {
+        var element = document.createElement('EvenxusLocal');
+        for (var i=0; i<arguments.length; i++) {
+            element.setAttribute('param'+i, arguments[i]);
+        }
+        document.documentElement.appendChild(element);
+        element.setAttribute('errorMessage', 'Unexpected error');
+        var ev = document.createEvent('Events');
+	ev.initEvent('Evenxus_Actualizar_Reportes_Recursos', true, false); // Lanzo evento  
         element.dispatchEvent(ev);
         // Error de instalacion del complemento
         if (!element.hasAttribute('evenxus_load_ok')) {

@@ -212,3 +212,28 @@ function EvenxusLanzarReport($reporte,$actualizar_report_auto) {
     return $LanzarReporte;
 }
 
+function ActualizarRecursos($actualizar_report_auto,$recursos) {
+    $actualizar="";
+    global $dolibarr_main_url_root;
+    $rutadescargareportes =  $dolibarr_main_url_root . '/evenxusreports/reports';
+    if ($actualizar_report_auto==1) {
+        for ($i=0;$i<count($recursos); $i++)  {
+            $actualizar=$actualizar."EvenxusActualizarReportRecurso('$rutadescargareportes/es_ES/','".$recursos[$i]."','es_ES/');\n";
+            $actualizar=$actualizar."EvenxusActualizarReportRecurso('$rutadescargareportes/en_US/','".$recursos[$i]."','en_US/');\n";
+        }
+    }
+    return $actualizar;
+}
+
+function ActualizarSubReportes($actualizar_report_auto,$recursos) {
+    $actualizar="";
+    global $dolibarr_main_url_root;
+    $rutadescargareportes =  $dolibarr_main_url_root . '/evenxusreports/reports';
+    if ($actualizar_report_auto==1) {
+        for ($i=0;$i<count($recursos); $i++)  {
+            $actualizar=$actualizar."EvenxusActualizarReportRecurso('$rutadescargareportes/','".$recursos[$i]."','/');\n";
+        }
+    }
+    return $actualizar;
+}
+
