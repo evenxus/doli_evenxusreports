@@ -40,7 +40,7 @@ print '<h3>';
 print $langs->trans("Parrafo1");
 print '<center>';
 print 'Plugin<br>';
-print '<button id="plugin" onclick="DescargarPlugin(\''.$dolibarr_main_url_root.'/evenxusreports/xpi/evenxusreports@evenxus.xpi\')">Descargar Plugin</button>';
+print '<button id="plugin" onclick="DescargarPlugin()">Descargar Plugin</button>';
 print '</center>';
 print '<br><br>';
 print $langs->trans("Parrafo2");
@@ -52,5 +52,10 @@ print '<br><br>';
 print $langs->trans("Parrafo5");
 print '<br><br>';
 llxFooter();
-
+print "<script type='text/javascript'>
+    
+    function DescargarPlugin() {
+        window.open('".RUTAXPI."','_blank');    
+    }
+    </script>";
 

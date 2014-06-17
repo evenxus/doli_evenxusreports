@@ -63,7 +63,7 @@ print "<script type='text/javascript'>
     }
 
     function DescargarPlugin() {
-        window.open(URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/xpi/evenxusreports@evenxus.xpi','_self');    
+        window.open('".RUTAXPI."','_blank');    
     }
     function AcercaDe()  {
         window.open(URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/frontend/evenxusreports.php','_self');    

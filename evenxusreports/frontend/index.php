@@ -66,6 +66,12 @@ print "<script type='text/javascript'>
     // OR
     $('".$module."')[0].click();
 });
+    function AcercaDe()  {
+        window.open(URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/frontend/evenxusreports.php','_self');    
+    } 
+    function DescargarPlugin() {
+        window.open('".RUTAXPI."','_blank');    
+    }
 </script>";
 
 

@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+define("RUTAXPI","http://www.evenxus.com/repositorio/evenxusreports/xpi/evenxusreports@evenxus.xpi");
+
 
 /**
  * Botonera generica de impresion
@@ -215,11 +217,10 @@ function EvenxusLanzarReport($reporte,$actualizar_report_auto) {
 function ActualizarRecursos($actualizar_report_auto,$recursos) {
     $actualizar="";
     global $dolibarr_main_url_root;
-    $rutadescargareportes =  $dolibarr_main_url_root . '/evenxusreports/reports';
     if ($actualizar_report_auto==1) {
         for ($i=0;$i<count($recursos); $i++)  {
-            $actualizar=$actualizar."EvenxusActualizarReportRecurso('$rutadescargareportes/es_ES/','".$recursos[$i]."','es_ES/');\n";
-            $actualizar=$actualizar."EvenxusActualizarReportRecurso('$rutadescargareportes/en_US/','".$recursos[$i]."','en_US/');\n";
+            $actualizar=$actualizar."EvenxusActualizarReportRecurso(URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/reports/es_ES/','".$recursos[$i]."','es_ES/');\n";
+            $actualizar=$actualizar."EvenxusActualizarReportRecurso(URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/reports/en_US/','".$recursos[$i]."','en_US/');\n";
         }
     }
     return $actualizar;
@@ -228,10 +229,9 @@ function ActualizarRecursos($actualizar_report_auto,$recursos) {
 function ActualizarSubReportes($actualizar_report_auto,$recursos) {
     $actualizar="";
     global $dolibarr_main_url_root;
-    $rutadescargareportes =  $dolibarr_main_url_root . '/evenxusreports/reports';
     if ($actualizar_report_auto==1) {
         for ($i=0;$i<count($recursos); $i++)  {
-            $actualizar=$actualizar."EvenxusActualizarReportRecurso('$rutadescargareportes/','".$recursos[$i]."','/');\n";
+            $actualizar=$actualizar."EvenxusActualizarReportRecurso(URL_DOLI_BASE('".basename(DOL_DOCUMENT_ROOT)."')+'/evenxusreports/reports/','".$recursos[$i]."','/');\n";
         }
     }
     return $actualizar;

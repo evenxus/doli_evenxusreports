@@ -1,8 +1,0 @@
-# Dolibarr language file - en_US
-CHARSET=UTF-8
-
-Terceros=Third parties
-Proveedores=Suppliers
-societe=Third parties
-ListadoProveedores=Suppliers list
-Permission8001021=Allow access to list of suppliers
